@@ -207,3 +207,7 @@ include_directories(
 add_executable(talker src/talker.cpp)
 target_link_libraries(talker ${catkin_LIBRARIES})
 add_dependencies(talker master_generate_messages_cpp)
+
+catkin_install_python(PROGRAMS src/client.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
