@@ -3,18 +3,21 @@ import rospy
 from std_msgs.msg import String
 import http.client
 
-def talker():
-    pub = rospy.Publisher('chatter', String, queue_size=10)
-    rospy.init_node('talker', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
+def client():
+    rospy.init_node('client', anonymous=True)
+    rate = rospy.Rate(0.2) # 1hz
     while not rospy.is_shutdown():
-        hello_str = "hello world %s" % rospy.get_time()
+        connection = http.client.HTTPSConnection("autogator-servcie.herokuapp.com")
+        connection.request("GET", "/ros")
+        response = connection.getresponse()
+        hello_str = response.read().decode()
         rospy.loginfo(hello_str)
-        pub.publish(hello_str)
         rate.sleep()
+        connection.close()
+
 
 if __name__ == '__main__':
     try:
-        talker()
+        client()
     except rospy.ROSInterruptException:
         pass
