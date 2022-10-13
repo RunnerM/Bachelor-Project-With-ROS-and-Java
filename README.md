@@ -12,11 +12,9 @@ Machine System/maschine_ws/
 ````
 # README #
 
-After cloning you need to run:
+This README would normally document whatever steps are necessary to get your application up and running.
 
-````
-catkin_make
-````
+### What is this repository for? ###
 
 * Quick summary
 * Version
