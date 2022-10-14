@@ -205,6 +205,12 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-catkin_install_python(PROGRAMS src/networking.py
+catkin_install_python(PROGRAMS src/networking/networking.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
+catkin_install_python(PROGRAMS src/master/master.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
+catkin_install_python(PROGRAMS src/selfdriving/selfdriving.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )

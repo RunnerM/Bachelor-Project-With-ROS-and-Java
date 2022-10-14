@@ -3,9 +3,10 @@ import rospy
 from std_msgs.msg import String
 import http.client
 
-def client():
+
+def networking():
     rospy.init_node('networking', anonymous=True)
-    rate = rospy.Rate(0.2) # 1hz
+    rate = rospy.Rate(0.2)  # 1hz
     while not rospy.is_shutdown():
         connection = http.client.HTTPSConnection("autogator-servcie.herokuapp.com")
         connection.request("GET", "/ros")
@@ -18,6 +19,6 @@ def client():
 
 if __name__ == '__main__':
     try:
-        client()
+        networking()
     except rospy.ROSInterruptException:
         pass
