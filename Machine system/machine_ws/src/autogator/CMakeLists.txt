@@ -214,6 +214,6 @@ catkin_install_python(PROGRAMS src/master/master.py
 catkin_install_python(PROGRAMS src/selfdriving/selfdriving.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
-catkin_install_python(PROGRAMS scripts/gps.py
+catkin_install_python(PROGRAMS src/gps/gps.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
