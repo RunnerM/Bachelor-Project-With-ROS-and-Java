@@ -7,6 +7,7 @@ from std_msgs.msg import String
 import http.client
 
 from autogator.srv import *
+from autogatorClient import AutogatorClient
 
 #Handling communication between networking/master node through service
 #As networking will be 'sending' cmds to master.
@@ -35,13 +36,8 @@ def networking():
     print("Requesting %s+%s" % (x, y))
     print("%s + %s = %s" % (x, y, add_two_ints_client(x, y)))
     while not rospy.is_shutdown():
-        connection = http.client.HTTPSConnection("autogator-servcie.herokuapp.com")
-        connection.request("GET", "/ros")
-        response = connection.getresponse()
-        hello_str = response.read().decode()
-        rospy.loginfo(hello_str)
+        AutogatorClient.scan_for_command()
         rate.sleep()
-        connection.close()
 
 
 if __name__ == '__main__':
