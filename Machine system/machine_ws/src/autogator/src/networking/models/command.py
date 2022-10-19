@@ -1,5 +1,7 @@
+#!/usr/bin/env python
 import string
 import json
+from json import JSONEncoder
 
 
 class Command:
@@ -13,4 +15,9 @@ class Command:
         self.state = state
 
     def to_json(self):
-        return json.dumps(self)
+        return json.dumps(self, cls=CommandEncoder)
+
+
+class CommandEncoder(JSONEncoder):
+    def default(self, obj):
+        return obj.__dict__

@@ -2,6 +2,7 @@
 import json
 import unittest
 
+from src.autogator.src.networking.models.command import Command
 from src.autogator.src.networking.models.gpsTrack import GpsTrack, GpsTrackPoint
 
 
@@ -36,7 +37,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(gt.points[1].latitude, 41.40333)
         self.assertEqual(gt.points[1].longitude, 2.17402)
 
-
     def test_track_name(self):
         gt = seed_data()
         self.assertEqual("recording on field", gt.track_name)
@@ -47,6 +47,13 @@ class MyTestCase(unittest.TestCase):
         self.assertIsNotNone(json_gt)
         self.assertEqual(json_gt,
                          '{"points": [{"latitude": 41.40338, "longitude": 2.17403}, {"latitude": 41.40333, "longitude": 2.17402}], "track_name": "recording on field"}')
+
+    def test_command_serialization(self):
+        command = Command("type", "time", "state")
+        json_command = command.to_json()
+        self.assertIsNotNone(json_command)
+        self.assertEqual(json_command,
+                         '{"command_type": "type", "time": "time", "state": "state"}')
 
 
 if __name__ == '__main__':
