@@ -20,7 +20,7 @@ class GpsTrack(object):
     points = [GpsTrackPoint]
 
     def __init__(self, track_name=string):
-        self.points = [GpsTrackPoint]
+        self.points = []
         self.track_name = track_name
         pass
 
@@ -28,7 +28,7 @@ class GpsTrack(object):
         self.points.append(track_point)
         return
 
-    def remove_last_point(self, track_point=GpsTrackPoint):
+    def remove_point(self, track_point=GpsTrackPoint):
         self.points.remove(track_point)
 
     def to_json(self):
