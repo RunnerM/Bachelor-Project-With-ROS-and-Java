@@ -9,20 +9,23 @@ import http.client
 from autogator.srv import *
 from autogatorClient import AutogatorClient
 
-#Handling communication between networking/master node through service
-#As networking will be 'sending' cmds to master.
-#cmds needs to be described in .srv files
-def add_two_ints_client(x,y):
+
+# Handling communication between networking/master node through service
+# As networking will be 'sending' cmds to master.
+# cmds needs to be described in .srv files
+def add_two_ints_client(x, y):
     rospy.wait_for_service('add_two_ints', 60)
     try:
         cmd_from_serv = rospy.ServiceProxy('add_two_ints', AddTwoInts)
-        response1 = cmd_from_serv(x,y)
+        response1 = cmd_from_serv(x, y)
         return response1.sum
     except rospy.ServiceException as e:
         print("Service call failed: %s" % e)
 
+
 def usage():
     return "%s [x y]" % sys.argv[0]
+
 
 def networking():
     rospy.init_node('networking', anonymous=True)

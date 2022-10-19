@@ -3,8 +3,8 @@ import rospy
 from std_msgs.msg import String
 
 
-####subscriber_listener=rospy.SubscribeListener can later be changed to correct
-###instance and not dummy data one
+# subscriber_listener=rospy.SubscribeListener can later be changed to correct
+# instance and not dummy data one
 
 def gps_node():
     pub = rospy.Publisher('gps_data', String, queue_size=10)
