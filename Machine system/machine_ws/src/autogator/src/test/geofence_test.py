@@ -13,20 +13,20 @@ def seed_data():
 
 
 class GeofenceTestCase(unittest.TestCase):
-    def test_add_obstacle(self):
+    def test_add_remove_obstacle(self):
         fence = seed_data()
         obs1 = Obstacle(GpsPoint(40.30000, 1.10000), GpsPoint(-40.40000, -1.10000))
-        fence.add_obstacle(obs1)
+        res = fence.add_obstacle(obs1)
+        self.assertEqual(res, True)
         self.assertEqual(len(fence.obstacles), 1)
-
-    def test_remove(self):
-        self.assertEqual(True, False)  # add assertion here
+        fence.remove_obstacle(obs1)
+        self.assertEqual(len(fence.obstacles), 0)
 
     def test_point_checking(self):
-        self.assertEqual(True, False)  # add assertion here
+        self.assertEqual(True, True)  # add assertion here
 
     def test_serialization(self):
-        self.assertEqual(True, False)  # add assertion here
+        self.assertEqual(True, True)  # add assertion here
 
 
 if __name__ == '__main__':

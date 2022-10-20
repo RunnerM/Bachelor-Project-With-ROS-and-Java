@@ -61,10 +61,10 @@ class GeoFence(object):
 
     # This function checks if the point is within the geofence boundaries and outside any obstacles
     def check_point_in_fence(self, point=GpsPoint):
-        if self.a.latitude < point.latitude < self.c.latitude and self.a.longitude < point.longitude < self.c.longitude:
+        if self.a.latitude > point.latitude > self.c.latitude and self.a.longitude > point.longitude > self.c.longitude:
             for obstacle in self.obstacles:
-                if (obstacle.a.latitude < point.latitude < obstacle.c.latitude and
-                        obstacle.a.longitude < point.longitude < obstacle.c.longitude):
+                if (obstacle.a.latitude > point.latitude > obstacle.c.latitude and
+                        obstacle.a.longitude > point.longitude > obstacle.c.longitude):
                     return False
             return True
         return False
