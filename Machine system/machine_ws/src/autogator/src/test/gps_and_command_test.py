@@ -1,21 +1,20 @@
 #!/usr/bin/env python
-import json
 import unittest
 
-from src.autogator.src.networking.models.command import Command
-from src.autogator.src.networking.models.gpsTrack import GpsTrack, GpsTrackPoint
+from src.autogator.src.utils.models.command import Command
+from src.autogator.src.utils.models.gpsTrack import GpsTrack, GpsPoint
 
 
 def seed_data():
     gt = GpsTrack("recording on field")
-    point = GpsTrackPoint(41.40338, 2.17403)
-    point2 = GpsTrackPoint(41.40333, 2.17402)
+    point = GpsPoint(41.40338, 2.17403)
+    point2 = GpsPoint(41.40333, 2.17402)
     gt.add_track_point(point)
     gt.add_track_point(point2)
     return gt
 
 
-class MyTestCase(unittest.TestCase):
+class GpsAndCommandTestCase(unittest.TestCase):
 
     def test_add_point(self):
         gt = seed_data()
@@ -27,7 +26,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_remove_point(self):
         gt = seed_data()
-        point_x = GpsTrackPoint(1.32454, 33.24434)
+        point_x = GpsPoint(1.32454, 33.24434)
         gt.add_track_point(point_x)
         self.assertEqual(len(gt.points), 3)
         gt.remove_point(point_x)

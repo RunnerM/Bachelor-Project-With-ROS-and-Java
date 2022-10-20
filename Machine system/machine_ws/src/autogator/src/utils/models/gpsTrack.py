@@ -5,7 +5,7 @@ from json import JSONEncoder
 
 
 # The object meant to follow the DD GPS format which stands for Decimal degrees.
-class GpsTrackPoint(object):
+class GpsPoint(object):
     latitude = float
     longitude = float
 
@@ -17,18 +17,18 @@ class GpsTrackPoint(object):
 
 class GpsTrack(object):
     track_name = string
-    points = [GpsTrackPoint]
+    points = [GpsPoint]
 
     def __init__(self, track_name=string):
         self.points = []
         self.track_name = track_name
         pass
 
-    def add_track_point(self, track_point=GpsTrackPoint):
+    def add_track_point(self, track_point=GpsPoint):
         self.points.append(track_point)
         return
 
-    def remove_point(self, track_point=GpsTrackPoint):
+    def remove_point(self, track_point=GpsPoint):
         self.points.remove(track_point)
 
     def to_json(self):

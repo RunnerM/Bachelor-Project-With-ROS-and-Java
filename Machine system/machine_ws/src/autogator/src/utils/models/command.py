@@ -4,7 +4,11 @@ import json
 from json import JSONEncoder
 
 
-class Command:
+def from_json(json_string=string):
+    return json.loads(json_string, JSONEncoder)
+
+
+class Command(object):
     command_type = string
     time = string
     state = string
