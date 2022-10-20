@@ -1,0 +1,26 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- develop
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+    sudo curl https://cli-assets.heroku.com/install.sh | sh
+    cd Backend\ service/AutoGatrorBackend
+    HEROKU_API_KEY=$(HEROKU_TOKEN) heroku container:login
+    HEROKU_API_KEY=$(HEROKU_TOKEN) heroku container:push -a autogator-servcie web
+    HEROKU_API_KEY=$(HEROKU_TOKEN) heroku container:release -a autogator-servcie web
+  displayName: 'Publish To Heroku'
+- task: ado-discord-webhook@1
+  inputs:
+    channelId: '1032580085842186240'
+    webhookKey: 'O8b5Nt08B25d4Qg1Im5MovXTbvK03dwc-Bp3_YandHFiqoWKkXfxc855w1PwcKKsyV4r'
+    name: 'DevOps'
+    avatar: 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fp2zk82o7hr3yb6ge7gzxx4ki-wpengine.netdna-ssl.com%2Fwp-content%2Fuploads%2FAzure-DevOps-3.png&imgrefurl=https%3A%2F%2Fwww.parkmycloud.com%2Fblog%2Fazure-devops%2F&tbnid=jx9OGJjxwveaAM&vet=12ahUKEwi-qPC6wLL3AhVM9aQKHbraAfoQMygAegUIARDZAQ..i&docid=gNW78kdqZ3gaNM&w=800&h=500&q=azure%20devops%20logo&ved=2ahUKEwi-qPC6wLL3AhVM9aQKHbraAfoQMygAegUIARDZAQ'
+    messageType: 'content'
+    content: 'New Build Have been released for heroku'
