@@ -21,6 +21,15 @@ class Command(object):
     def to_json(self):
         return json.dumps(self, cls=CommandEncoder)
 
+    @staticmethod
+    def from_json(json_string):
+        return json.loads(json_string, object_hook=Command.map_json)
+
+    @staticmethod
+    def map_json(json_dct):
+        return Command(json_dct['command_type'],
+                       json_dct['time'], json_dct['state'])
+
 
 class CommandEncoder(JSONEncoder):
     def default(self, obj):

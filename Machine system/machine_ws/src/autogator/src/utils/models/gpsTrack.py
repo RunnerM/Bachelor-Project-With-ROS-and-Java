@@ -34,6 +34,15 @@ class GpsTrack(object):
     def to_json(self):
         return json.dumps(self, cls=GpsTrackEncoder)
 
+    @staticmethod
+    def from_json(json_string):
+        return json.loads(json_string, object_hook=GpsTrack.map_json)
+
+    @staticmethod
+    def map_json(json_dct):
+        return GpsTrack(json_dct['track_name'], json_dct['points'])
+
+
 
 class GpsTrackEncoder(JSONEncoder):
     def default(self, obj):

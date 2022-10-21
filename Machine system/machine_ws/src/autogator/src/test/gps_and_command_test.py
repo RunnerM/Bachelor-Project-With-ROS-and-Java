@@ -45,7 +45,8 @@ class GpsAndCommandTestCase(unittest.TestCase):
         json_gt = gt.to_json()
         self.assertIsNotNone(json_gt)
         self.assertEqual(json_gt,
-                         '{"points": [{"latitude": 41.40338, "longitude": 2.17403}, {"latitude": 41.40333, "longitude": 2.17402}], "track_name": "recording on field"}')
+                         '{"points": [{"latitude": 41.40338, "longitude": 2.17403}, {"latitude": 41.40333, '
+                         '"longitude": 2.17402}], "track_name": "recording on field"}')
 
     def test_command_serialization(self):
         command = Command("type", "time", "state")
@@ -53,6 +54,10 @@ class GpsAndCommandTestCase(unittest.TestCase):
         self.assertIsNotNone(json_command)
         self.assertEqual(json_command,
                          '{"command_type": "type", "time": "time", "state": "state"}')
+        decoded_command = Command.from_json(json_command)
+        self.assertEqual(command.command_type, decoded_command.command_type)
+        self.assertEqual(command.time, decoded_command.time)
+        self.assertEqual(command.state, decoded_command.state)
 
 
 if __name__ == '__main__':
