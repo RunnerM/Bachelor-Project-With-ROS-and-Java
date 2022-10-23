@@ -40,13 +40,19 @@ class GpsAndCommandTestCase(unittest.TestCase):
         gt = seed_data()
         self.assertEqual("recording on field", gt.track_name)
 
-    def test_serialization(self):
+    def test_track_serialization(self):
         gt = seed_data()
         json_gt = gt.to_json()
         self.assertIsNotNone(json_gt)
         self.assertEqual(json_gt,
                          '{"points": [{"latitude": 41.40338, "longitude": 2.17403}, {"latitude": 41.40333, '
                          '"longitude": 2.17402}], "track_name": "recording on field"}')
+        decoded_gt = GpsTrack.from_json(json_gt)
+        self.assertEqual(gt.track_name, decoded_gt.track_name)
+        self.assertEqual(gt.points[0].latitude, decoded_gt.points[0].latitude)
+        self.assertEqual(gt.points[0].longitude, decoded_gt.points[0].longitude)
+        self.assertEqual(gt.points[1].latitude, decoded_gt.points[1].latitude)
+        self.assertEqual(gt.points[1].longitude, decoded_gt.points[1].longitude)
 
     def test_command_serialization(self):
         command = Command("type", "time", "state")

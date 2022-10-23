@@ -14,6 +14,15 @@ class GpsPoint(object):
         self.longitude = longitude
         pass
 
+    @staticmethod
+    def from_json(json_string):
+        return json.loads(json_string, object_hook=GpsPoint.map_json)
+
+    @staticmethod
+    def map_json(json_dct):
+        return GpsPoint(json_dct['latitude'],
+                        json_dct['longitude'])
+
 
 class GpsTrack(object):
     track_name = string
@@ -36,12 +45,20 @@ class GpsTrack(object):
 
     @staticmethod
     def from_json(json_string):
-        return json.loads(json_string, object_hook=GpsTrack.map_json)
+        return json.loads(json_string, object_hook=GpsTrack.map2_json)
 
     @staticmethod
     def map_json(json_dct):
         return GpsTrack(json_dct['track_name'], json_dct['points'])
 
+    @staticmethod
+    def map2_json(json_dct):
+        if 'latitude' in json_dct.keys():
+            return GpsPoint.from_json(json_dct)
+        elif 'track_name' in json_dct.keys():
+            return GpsTrack(json_dct['points'])
+        else:
+            return json_dct
 
 
 class GpsTrackEncoder(JSONEncoder):
