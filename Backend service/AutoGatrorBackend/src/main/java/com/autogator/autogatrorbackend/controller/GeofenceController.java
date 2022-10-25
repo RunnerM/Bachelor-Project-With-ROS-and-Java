@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/geofence")
 public class GeofenceController {
@@ -23,5 +25,11 @@ public class GeofenceController {
   public ResponseEntity<Geofence> getGeofence(@NotNull @RequestParam String geofenceName) {
 
     return ResponseEntity.ok(geofenceService.getGeofence(geofenceName));
+  }
+
+  @GetMapping("/getNames")
+  public ResponseEntity<List<String>> getGeofenceNames() {
+
+    return ResponseEntity.ok(geofenceService.getGeofenceNames());
   }
 }

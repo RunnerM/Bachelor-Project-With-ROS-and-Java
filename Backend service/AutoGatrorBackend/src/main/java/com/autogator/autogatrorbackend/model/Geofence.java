@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,8 +14,12 @@ import java.util.Set;
 public class Geofence {
 
     private Long id;
+
     private String geofenceName;
+
     private float pointA;
+
     private float pointB;
-    private Set<GeofenceInternalBoundary> geofenceInternalBoundaries;
+
+    private List<GeofenceInternalBoundary> geofenceInternalBoundaries;
 }

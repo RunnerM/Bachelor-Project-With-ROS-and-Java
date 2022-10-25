@@ -15,6 +15,20 @@ public class RouteController {
 
   @Autowired IrrigationRouteService irrigationRouteService;
 
+  @PostMapping
+  public ResponseEntity<IrrigationRoute> insertRoute(
+          @NotNull @RequestBody IrrigationRoute irrigationRoute) {
+
+    return ResponseEntity.ok(irrigationRouteService.saveRoute(irrigationRoute));
+  }
+
+  @DeleteMapping
+  public ResponseEntity<Object> removeRoute(
+          @NotNull @RequestParam String routeName) {
+
+    return ResponseEntity.ok(irrigationRouteService.removeRoute(routeName));
+  }
+
   @GetMapping
   public ResponseEntity<IrrigationRoute> getRoute(@NotNull @RequestParam String routeName)
       throws Exception {
@@ -26,12 +40,5 @@ public class RouteController {
   public ResponseEntity<List<String>> getRouteNames() {
 
     return ResponseEntity.ok(irrigationRouteService.getRouteNames());
-  }
-
-  @PostMapping
-  public ResponseEntity<IrrigationRoute> insertRoute(
-      @NotNull @RequestBody IrrigationRoute irrigationRoute) {
-
-    return ResponseEntity.ok(irrigationRouteService.saveRoute(irrigationRoute));
   }
 }

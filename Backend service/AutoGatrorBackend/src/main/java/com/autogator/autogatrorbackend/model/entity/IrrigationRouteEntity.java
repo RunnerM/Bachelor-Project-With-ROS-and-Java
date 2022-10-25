@@ -9,15 +9,15 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "irrigation_route")
+@Table(name = "route", schema = "ag")
 public class IrrigationRouteEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.route_id_seq")
+    @SequenceGenerator(name = "ag.route_id_seq")
     private Long id;
 
-    @Column(name = "route_name")
+    @Column(name = "route_name", unique = true)
     private String routeName;
 
     @Column(name = "route_points")

@@ -15,12 +15,12 @@ import java.sql.Timestamp;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "command")
+@Table(name = "command", schema = "ag")
 public class CommandEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.command_id_seq")
+    @SequenceGenerator(name = "ag.command_id_seq")
     private Long id;
 
     @Column(name = "machine_command")

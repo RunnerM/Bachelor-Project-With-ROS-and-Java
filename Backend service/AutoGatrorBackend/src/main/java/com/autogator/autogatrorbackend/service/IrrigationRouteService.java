@@ -22,12 +22,13 @@ public class IrrigationRouteService {
 
     public IrrigationRoute saveRoute(IrrigationRoute irrigationRoute) {
 
-        IrrigationRoute irrigationRouteEntity =
-                irrigationRouteRepository.save(mapper.map(irrigationRoute, IrrigationRoute.class));
+        IrrigationRouteEntity irrigationRouteEntity =
+                irrigationRouteRepository.save(mapper.map(irrigationRoute, IrrigationRouteEntity.class));
 
         return mapper.map(irrigationRouteEntity, IrrigationRoute.class);
     }
 
+    //TODO exception management
     public IrrigationRoute getRoute(String routeName) throws Exception {
 
         IrrigationRouteEntity irrigationRouteEntity =
@@ -40,5 +41,9 @@ public class IrrigationRouteService {
 
     public List<String> getRouteNames() {
         return irrigationRouteRepository.getIrrigationRouteNames();
+    }
+
+    public Object removeRoute(String routeName) {
+        return irrigationRouteRepository.deleteByRouteName(routeName);
     }
 }

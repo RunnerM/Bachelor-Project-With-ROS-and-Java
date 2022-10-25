@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class IrrigationRoute {
 
-    private int id;
+    private Long id;
 
     private String routeName;
 
