@@ -19,7 +19,6 @@ class GpsPoint(object):
     def from_json(json_string):
         return json.loads(json_string, object_hook=GpsPoint.map_json)
 
-
     @staticmethod
     def map_json(json_dct):
         return GpsPoint(json_dct['latitude'],
@@ -30,8 +29,11 @@ class GpsTrack(object):
     track_name = string
     points = [GpsPoint]
 
-    def __init__(self, track_name=string):
-        self.points = []
+    def __init__(self, track_name=string, points=[]):
+        if points is None:
+            self.points = []
+        else:
+            self.points = points
         self.track_name = track_name
         pass
 
@@ -54,7 +56,7 @@ class GpsTrack(object):
         if 'latitude' in json_dct.keys():
             return GpsPoint.map_json(json_dct)
         elif 'track_name' in json_dct.keys():
-            return GpsTrack(json_dct['track_name'])
+            return GpsTrack(json_dct['track_name'], json_dct['points'])
         else:
             return json_dct
 
