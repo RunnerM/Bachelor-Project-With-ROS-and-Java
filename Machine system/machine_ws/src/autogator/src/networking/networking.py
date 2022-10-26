@@ -52,6 +52,7 @@ def networking():
     print("%s , %s , %s" % (command_type, state, command_net_client(command_type, time, state)))
     while not rospy.is_shutdown():
         AutogatorClient.scan_for_command()
+        #Need to pass self_param
         rate.sleep()
 
 
