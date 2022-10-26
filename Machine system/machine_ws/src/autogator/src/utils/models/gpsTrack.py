@@ -2,6 +2,7 @@
 import string
 import json
 from json import JSONEncoder
+import marshal
 
 
 # The object meant to follow the DD GPS format which stands for Decimal degrees.
@@ -17,6 +18,7 @@ class GpsPoint(object):
     @staticmethod
     def from_json(json_string):
         return json.loads(json_string, object_hook=GpsPoint.map_json)
+
 
     @staticmethod
     def map_json(json_dct):
@@ -44,19 +46,15 @@ class GpsTrack(object):
         return json.dumps(self, cls=GpsTrackEncoder)
 
     @staticmethod
-    def from_json(json_string):
-        return json.loads(json_string, object_hook=GpsTrack.map2_json)
+    def from_json(json_string=string):
+        return json.loads(json_string, object_hook=GpsTrack.map_json)
 
     @staticmethod
     def map_json(json_dct):
-        return GpsTrack(json_dct['track_name'], json_dct['points'])
-
-    @staticmethod
-    def map2_json(json_dct):
         if 'latitude' in json_dct.keys():
-            return GpsPoint.from_json(json_dct)
+            return GpsPoint.map_json(json_dct)
         elif 'track_name' in json_dct.keys():
-            return GpsTrack(json_dct['points'])
+            return GpsTrack(json_dct['track_name'])
         else:
             return json_dct
 
