@@ -515,3 +515,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+Backend service/AutoGatrorBackend/.gradle
+Machine system/machine_ws/.idea
