@@ -22,11 +22,23 @@ class GeofenceTestCase(unittest.TestCase):
         fence.remove_obstacle(obs1)
         self.assertEqual(len(fence.obstacles), 0)
 
-    def test_point_checking(self):
-        self.assertEqual(True, True)  # add assertion here
-
     def test_serialization(self):
-        self.assertEqual(True, True)  # add assertion here
+        fence = seed_data()
+        obs1 = Obstacle(GpsPoint(40.30000, 1.10000), GpsPoint(-40.40000, -1.10000))
+        res = fence.add_obstacle(obs1)
+        self.assertEqual(res, True)
+        json_fence = fence.to_json()
+        self.assertIsNotNone(json_fence)
+        self.assertEqual(json_fence,
+                         '{"obstacles": [{"a": {"latitude": 40.3, "longitude": 1.1}, "c": {"latitude": -40.4, '
+                         '"longitude": -1.1}}], "A": {"latitude": 41.4, "longitude": 2.1}, "C": {"latitude": -41.4, '
+                         '"longitude": -2.1}}')
+        decoded_fence = GeoFence.from_json(json_fence)
+        self.assertIsInstance(decoded_fence, GeoFence)
+        self.assertEqual(fence.A.latitude, decoded_fence.A.latitude)
+        self.assertEqual(fence.A.longitude, decoded_fence.A.longitude)
+        self.assertEqual(fence.C.latitude, decoded_fence.C.latitude)
+        self.assertEqual(fence.C.longitude, decoded_fence.C.longitude)
 
 
 if __name__ == '__main__':

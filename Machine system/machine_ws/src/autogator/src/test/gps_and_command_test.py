@@ -48,6 +48,7 @@ class GpsAndCommandTestCase(unittest.TestCase):
                          '{"points": [{"latitude": 41.40338, "longitude": 2.17403}, {"latitude": 41.40333, '
                          '"longitude": 2.17402}], "track_name": "recording on field"}')
         decoded_gt = GpsTrack.from_json(json_gt)
+        self.assertIsInstance(decoded_gt, GpsTrack)
         self.assertEqual(gt.track_name, decoded_gt.track_name)
         self.assertEqual(gt.points[0].latitude, decoded_gt.points[0].latitude)
         self.assertEqual(gt.points[0].longitude, decoded_gt.points[0].longitude)
@@ -61,6 +62,7 @@ class GpsAndCommandTestCase(unittest.TestCase):
         self.assertEqual(json_command,
                          '{"command_type": "type", "time": "time", "state": "state"}')
         decoded_command = Command.from_json(json_command)
+        self.assertIsInstance(decoded_command, Command)
         self.assertEqual(command.command_type, decoded_command.command_type)
         self.assertEqual(command.time, decoded_command.time)
         self.assertEqual(command.state, decoded_command.state)

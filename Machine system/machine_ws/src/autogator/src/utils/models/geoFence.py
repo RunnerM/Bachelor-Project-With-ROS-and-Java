@@ -24,20 +24,37 @@ class Obstacle(object):
         self.c = c
         return
 
+    @staticmethod
+    def from_json(json_string):
+        return json.loads(json_string, object_hook=Obstacle.map_json)
+
+    @staticmethod
+    def map_json(json_dct):
+        if 'latitude' in json_dct.keys():
+            return GpsPoint.map_json(json_dct)
+        elif 'a' in json_dct.keys():
+            return Obstacle(json_dct['a'], json_dct['c'])
+        else:
+            return json_dct
+
 
 class GeoFence(object):
-    a = GpsPoint
-    c = GpsPoint
+    A = GpsPoint
+    C = GpsPoint
     obstacles = [Obstacle]
 
-    def __init__(self, a=float, c=float):
-        self.a = a
-        self.c = c
+    def __init__(self, a=float, c=float, obstacles=[]):
+        if obstacles is None:
+            self.obstacles = []
+        else:
+            self.obstacles = obstacles
+        self.A = a
+        self.C = c
         self.obstacles = []
 
     def set_fence(self, a, c):
-        self.a = a
-        self.c = c
+        self.A = a
+        self.C = c
         return
 
     # Checks if the point is within the geofence boundaries and does not intersect any obstacles
@@ -54,10 +71,10 @@ class GeoFence(object):
 
     # This function checks if the point is within the geofence boundaries and outside any obstacles
     def check_point_in_fence(self, point=GpsPoint):
-        if self.a.latitude > point.latitude > self.c.latitude and self.a.longitude > point.longitude > self.c.longitude:
+        if self.A.latitude > point.latitude > self.C.latitude and self.A.longitude > point.longitude > self.C.longitude:
             for obstacle in self.obstacles:
-                if (obstacle.a.latitude > point.latitude > obstacle.c.latitude and
-                        obstacle.a.longitude > point.longitude > obstacle.c.longitude):
+                if (obstacle.A.latitude > point.latitude > obstacle.C.latitude and
+                        obstacle.A.longitude > point.longitude > obstacle.C.longitude):
                     return False
             return True
         return False
@@ -71,7 +88,14 @@ class GeoFence(object):
 
     @staticmethod
     def map_json(json_dct):
-        return GeoFence(json_dct['a'], json_dct['c'], json_dct['obstacles'])
+        if 'latitude' in json_dct.keys():
+            return GpsPoint.map_json(json_dct)
+        elif 'a' in json_dct.keys():
+            return Obstacle.map_json(json_dct)
+        elif 'obstacles' in json_dct.keys():
+            return GeoFence(json_dct['A'], json_dct['C'], json_dct['obstacles'])
+        else:
+            return json_dct
 
 
 class GeoFenceEncoder(JSONEncoder):
