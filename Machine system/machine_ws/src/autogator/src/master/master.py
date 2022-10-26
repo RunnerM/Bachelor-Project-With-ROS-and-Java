@@ -26,7 +26,7 @@ def master():
     # BPFC-13
     rospy.Subscriber("gps_location", String, callback)
     # That's for BPFC-12
-    service_s = rospy.Service('CommandNet', CommandNet, commandNet())
+    service_s = rospy.Service('CommandNet', CommandNet, commandNet)
     rate = rospy.Rate(0.2)  # 1hz
 
     # keeps code from exiting until the node is stopped
@@ -34,7 +34,7 @@ def master():
 
     while not rospy.is_shutdown():
         rospy.loginfo("master is live")
-        pub.publish(commandNet())
+        pub.publish(commandNet)
         rate.sleep()
 
 
