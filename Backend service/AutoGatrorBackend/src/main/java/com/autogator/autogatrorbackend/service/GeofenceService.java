@@ -20,6 +20,8 @@ public class GeofenceService {
     GeofenceRepository geofenceRepository;
 
     public Geofence saveRoute(Geofence geofence) {
+        geofence.setId(null);
+
         return mapper.map(geofenceRepository.save(mapper.map(geofence, GeofenceEntity.class)), Geofence.class);
     }
 
@@ -29,5 +31,9 @@ public class GeofenceService {
 
     public List<String> getGeofenceNames() {
         return geofenceRepository.getGeofenceNames();
+    }
+
+    public Object removeGeofence(String geofenceName) {
+        return geofenceRepository.removeByGeofenceName(geofenceName);
     }
 }

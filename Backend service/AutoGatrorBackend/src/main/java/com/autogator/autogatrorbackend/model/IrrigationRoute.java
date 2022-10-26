@@ -2,8 +2,7 @@ package com.autogator.autogatrorbackend.model;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

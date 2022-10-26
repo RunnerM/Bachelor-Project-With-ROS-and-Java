@@ -32,4 +32,10 @@ public class GeofenceController {
 
     return ResponseEntity.ok(geofenceService.getGeofenceNames());
   }
+
+  @DeleteMapping("/removeByName")
+  public ResponseEntity<Object> getGeofenceNames(@RequestParam String geofenceName) {
+
+    return ResponseEntity.ok(geofenceService.removeGeofence(geofenceName));
+  }
 }
