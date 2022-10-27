@@ -1,8 +1,9 @@
 import unittest
 
-from src.autogator.src.networking.autogatorClient import AutogatorClient
+
 from src.autogator.src.utils.models.command import Command
 from src.autogator.src.utils.models.gpsTrack import GpsTrack
+from src.autogator.src.utils.networking.autogatorClient import AutogatorClient
 
 
 class MyTestCase(unittest.TestCase):
