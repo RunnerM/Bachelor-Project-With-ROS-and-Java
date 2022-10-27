@@ -50,13 +50,13 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   Num.msg
+   cmd_req.msg
  )
 
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   AddTwoInts.srv
+   CommandNet.srv
  )
 
 ## Generate actions in the 'action' folder
@@ -205,15 +205,18 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-catkin_install_python(PROGRAMS src/networking/networking.py
+catkin_install_python(PROGRAMS src/nodes/networking.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
-catkin_install_python(PROGRAMS src/master/master.py
+catkin_install_python(PROGRAMS src/nodes/master.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
-catkin_install_python(PROGRAMS src/selfdriving/selfdriving.py
+catkin_install_python(PROGRAMS src/nodes/selfdriving.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
-catkin_install_python(PROGRAMS src/gps/gps.py
+catkin_install_python(PROGRAMS src/nodes/gps.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+        )
+catkin_install_python(PROGRAMS src/nodes/em_supervision.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
         )
