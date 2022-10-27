@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-from autogator.srv import AddTwoInts, AddTwoIntsResponse
+from autogator.srv import CommandNet, CommandNetResponse
 
 import rospy
 from std_msgs.msg import String
+import os
 
 
 # This will be later turned into proper function
 # For now it's from the tutorial.
-def handle_add_two_ints(req):
-    print("Returning [%s + %s = %s]" % (req.a, req.b, (req.a + req.b)))
-    return AddTwoIntsResponse(req.a + req.b)
+def commandNet(req):
+    #Not sure how to pass arguments when using this method
+    print("Returning [%s , %s , %s]" % (req.a, req.b, req.t))
+    return CommandNetResponse(req.a + req.b)
 
 
 def callback(data):
@@ -19,11 +21,12 @@ def callback(data):
 
 
 def master():
-    rospy.init_node('master', anonymous=True)
+    pub = rospy.Publisher('gps_track', os.path.basename('../utils/models/gpsTrack.py'), queue_size=10)
+    rospy.init_node('master', anonymous=False)
     # BPFC-13
-    rospy.Subscriber("gps_data", String, callback)
+    rospy.Subscriber("gps_location", String, callback)
     # That's for BPFC-12
-    service_s = rospy.Service('add_two_ints', AddTwoInts, handle_add_two_ints())
+    service_s = rospy.Service('CommandNet', CommandNet, commandNet)
     rate = rospy.Rate(0.2)  # 1hz
 
     # keeps code from exiting until the node is stopped
@@ -31,6 +34,7 @@ def master():
 
     while not rospy.is_shutdown():
         rospy.loginfo("master is live")
+        pub.publish(commandNet)
         rate.sleep()
 
 
