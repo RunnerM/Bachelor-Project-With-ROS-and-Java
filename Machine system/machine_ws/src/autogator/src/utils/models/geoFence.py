@@ -43,14 +43,13 @@ class GeoFence(object):
     C = GpsPoint
     obstacles = [Obstacle]
 
-    def __init__(self, a=float, c=float, obstacles=[]):
+    def __init__(self, a=float, c=float, obstacles=None):
         if obstacles is None:
             self.obstacles = []
         else:
             self.obstacles = obstacles
         self.A = a
         self.C = c
-        self.obstacles = []
 
     def set_fence(self, a, c):
         self.A = a
