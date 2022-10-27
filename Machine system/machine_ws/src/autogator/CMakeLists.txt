@@ -50,13 +50,13 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   Num.msg
+   cmd_req.msg
  )
 
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   AddTwoInts.srv
+   CommandNet.srv
  )
 
 ## Generate actions in the 'action' folder
