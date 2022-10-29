@@ -1,32 +1,31 @@
 #!/usr/bin/env python
 import rospy
+
 from std_msgs.msg import String
+from datetime import time
 
-import os
 
+class gps_node:
+    _time = time
+    latitude = float
+    longitude = float
 
-# subscriber_listener=rospy.SubscribeListener can later be changed to correct
-# instance and not dummy data one
+    def __init__(self, _time=time, latitude=float, longitude=float):
+        self._time = time
+        self.latitude = latitude
+        self.longitude = longitude
 
-def gps_node():
-    pub = rospy.Publisher('gps_location', String, queue_size=10)
-    # Anonymous is to give it a name that is not taken, in case gps_node is already used
-    # somewhere else
-    rospy.init_node('gps_node', anonymous=True)
-    gps_node_rate = rospy.Rate(0.2)  # Keeping it 1hz?
-    lat = 0
-    long = 0
+        pub = rospy.Publisher('gps_location', String, queue_size=10)
+        rospy.init_node('gps_node', anonymous=True)
+        gps_node_rate = rospy.Rate(0.2)
 
-    while not rospy.is_shutdown():
-        lat += 1
-        long += 2
-        dummy_data_str = "Point: lat: %d and long: %d and the time is %s" % (lat, long, rospy.get_time())
+        rospy.get_time = time
+        longitude += 1
+        latitude += 2
+
+        dummy_data_str = "Point: lat: %d and long: %d and the time is %s" % (latitude, longitude, time)
         rospy.loginfo(dummy_data_str)
         pub.publish(dummy_data_str)
         gps_node_rate.sleep()
 
-    if __name__ == '__main__':
-        try:
-            gps_node()
-        except rospy.ROSInterruptException:
-            pass
+        pass

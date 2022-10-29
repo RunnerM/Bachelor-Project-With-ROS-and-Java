@@ -1,24 +1,26 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import String
-import os
+from datetime import time
 
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "Data Received %s", data.data)
 
 
-def em_supervision():
-    rospy.init_node('em_supervision', anonymous=False)
-    rospy.Subscriber("gps_location", String, callback)
-    rate = rospy.Rate(0.2)  # 1hz
-    while not rospy.is_shutdown():
-        rospy.loginfo("emergency supervision is live")
-        rate.sleep()
+class em_supervision:
+    _time = time
+    latitude = float
+    longitude = float
 
+    def __init__(self):
+        rospy.init_node('em_supervision', anonymous=False)
 
-if __name__ == '__main__':
-    try:
-        em_supervision()
-    except rospy.ROSInterruptException:
-        pass
+        rospy.Subscriber("gps_location", String, callback)
+        rate = rospy.Rate(0.2)
+
+        while not rospy.is_shutdown():
+            rospy.loginfo("emergency supervision is live")
+            rate.sleep()
+
+    pass
