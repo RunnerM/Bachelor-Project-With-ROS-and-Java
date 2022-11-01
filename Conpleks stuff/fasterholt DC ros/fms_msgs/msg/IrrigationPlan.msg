@@ -1,0 +1,5 @@
+PreIrrigation 	pre_irrigation
+Zone[] 			zones
+PostIrrigation 	post_irrigation
+EarlyStop       early_stop
+IrrigationOption option

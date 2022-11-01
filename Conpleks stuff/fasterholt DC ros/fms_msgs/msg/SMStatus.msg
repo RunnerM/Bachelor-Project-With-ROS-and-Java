@@ -1,0 +1,36 @@
+Header header
+
+uint8 STATE_LIFT=0
+uint8 STATE_ACTIVE=1
+uint8 STATE_MANUAL=2
+uint8 STATE_PRE_AUTO=3
+uint8 STATE_AUTO=4
+uint8 STATE_STOP=5 
+
+uint8 STATUS_OK=0
+uint8 STATUS_ERROR=1
+
+uint8 ERR_NONE=0
+uint8 ERR_LLC=1
+uint8 ERR_MIN_SPEED=2
+uint8 ERR_MAX_SPEED=3
+uint8 ERR_CAMERA=4
+uint8 ERR_LEFT_POSE=5
+uint8 ERR_RIGHT_POSE=6
+uint8 ERR_CAN=7
+uint8 ERR_LL_SPEED=8
+
+uint8 ALM_NONE=100
+uint8 ALM_LLC=101
+uint8 ALM_MIN_SPEED=102
+uint8 ALM_MAX_SPEED=103
+uint8 ALM_CAMERA=104
+uint8 ALM_LEFT_POSE=105
+uint8 ALM_RIGHT_POSE=106
+uint8 ALM_CAN=107
+uint8 ALM_LL_SPEED=108
+
+uint8 state
+uint8 status
+uint8 code
+string msg
