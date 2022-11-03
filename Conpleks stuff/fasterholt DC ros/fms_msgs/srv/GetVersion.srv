@@ -1,0 +1,5 @@
+bool entry
+---
+string sw_version
+string build_id
+string serial_number
