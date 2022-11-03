@@ -9,13 +9,13 @@ pipelines:
   default:
     - parallel:
       - step:
-          name: 'Build and Test'
+          name: 'Build'
           script:
             - echo "Your build and test goes here..."
       - step:
           name: 'Lint'
           script:
-            - echo "Your linting goes here..."
+            - echo "Your lintin'"
       - step:
           name: 'Security scan'
           script:
