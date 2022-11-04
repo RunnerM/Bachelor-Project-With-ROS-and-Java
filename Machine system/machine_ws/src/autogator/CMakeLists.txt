@@ -51,6 +51,11 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    cmd_req.msg
+   location.msg
+   machine_state.msg
+   motor_cmd.msg
+   steering_cmd.msg
+   steering_feedback.msg
  )
 
 ## Generate services in the 'srv' folder

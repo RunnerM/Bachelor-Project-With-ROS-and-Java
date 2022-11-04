@@ -1,0 +1,4 @@
+Header enum_header
+float32 longitude
+float32 latitude
+float32 rotation

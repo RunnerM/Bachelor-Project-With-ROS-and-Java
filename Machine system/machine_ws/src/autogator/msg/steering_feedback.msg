@@ -1,0 +1,3 @@
+Header enum_header
+float32 current_angle
+float32 target_angle
