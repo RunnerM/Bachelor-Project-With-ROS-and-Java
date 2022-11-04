@@ -3,11 +3,12 @@ from __future__ import print_function
 import sys
 from _cffi_backend import string
 import rospy
+from src.autogator.src.utils.services.networkingService import NetworkingService
 from std_msgs.msg import String
 
-from machine_ws.src.autogator.src.utils.networking.autogatorClient import AutogatorClient
 from machine_ws.src.autogator.srv import CommandNet
 import os
+
 
 
 def callback(data):
@@ -46,7 +47,7 @@ class networking:
         print("Requesting command: %s from %s with state: %s" % (command_type, time, state))
         print("%s , %s , %s" % (command_type, state, command_net_client(command_type, time, state)))
         while not rospy.is_shutdown():
-            AutogatorClient.scan_for_command()
+            NetworkingService.scan_command()
             rate.sleep()
 
     pass
