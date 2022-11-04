@@ -10,6 +10,8 @@ in
 ````
 Machine System/maschine_ws/
 ````
+Follow this link to set up pycharm not to complain about rospy:
+https://answers.ros.org/question/286242/cant-find-python-script-of-different-ros-package-in-pycharm/
 
 # README #
 
