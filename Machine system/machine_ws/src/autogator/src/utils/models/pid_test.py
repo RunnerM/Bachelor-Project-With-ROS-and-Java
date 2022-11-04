@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from simple_pid import PID
+from time import sleep
 
 
 class controlled_system:
@@ -8,10 +9,11 @@ class controlled_system:
 
     @staticmethod
     def update(new_value) -> float:
-        return new_value
+        return new_value-0.001
 
 
-pid = PID(0.4, 0.1, 0, setpoint=1)
+pid = PID(0.2, 0.3, 0, setpoint=1)
+pid.sample_time = 2
 
 # Assume we have a system we want to control in controlled_system
 v = controlled_system.update(0)
@@ -23,3 +25,5 @@ while True:
     # Feed the PID output to the system and get its current value
     v = controlled_system.update(control)
     print(v)
+    sleep(2)
+

@@ -1,4 +1,4 @@
 Header enum_header
-time time
+string type
 string state
 string success
