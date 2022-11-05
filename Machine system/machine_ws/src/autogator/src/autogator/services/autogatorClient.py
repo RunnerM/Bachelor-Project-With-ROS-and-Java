@@ -4,8 +4,8 @@ from typing import Optional
 
 import rospy
 
-from src.autogator.src.autogator.models.command import Command
-from src.autogator.src.autogator.models.gpsTrack import GpsTrack
+from autogator.models.command import Command
+from autogator.models.gpsTrack import GpsTrack
 
 
 class AutogatorClient:
