@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import http.client
-from typing import Optional, Any
+from typing import Optional
 
 import rospy
 
-from src.autogator.src.utils.models.command import Command
-from src.autogator.src.utils.models.gpsTrack import GpsTrack
+from src.autogator.src.autogator.models.command import Command
+from src.autogator.src.autogator.models.gpsTrack import GpsTrack
 
 
 class AutogatorClient:
@@ -54,3 +54,9 @@ class AutogatorClient:
         except Exception as e:
             rospy.loginfo(e)
             return False
+
+    def post_state(self, machine_state) -> bool:
+        pass
+
+    def post_location(self, location) -> bool:
+        pass

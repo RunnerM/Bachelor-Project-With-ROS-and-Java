@@ -1,7 +1,7 @@
 import unittest
 
-from src.autogator.src.utils.models.geoFence import GeoFence, Obstacle
-from src.autogator.src.utils.models.gpsTrack import GpsPoint
+from src.autogator.src.autogator.models.geoFence import GeoFence, Obstacle
+from src.autogator.src.autogator.models.gpsTrack import GpsPoint
 
 
 def seed_data():

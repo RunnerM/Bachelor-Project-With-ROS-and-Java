@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import unittest
 
-from src.autogator.src.utils.models.command import Command
-from src.autogator.src.utils.models.gpsTrack import GpsTrack, GpsPoint
+from src.autogator.src.autogator.models.command import Command
+from src.autogator.src.autogator.models.gpsTrack import GpsTrack, GpsPoint
 
 
 def seed_data():

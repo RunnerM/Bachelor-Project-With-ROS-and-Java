@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -56,6 +56,7 @@ find_package(catkin REQUIRED COMPONENTS
    motor_cmd.msg
    steering_cmd.msg
    steering_feedback.msg
+   gps_track.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -210,18 +211,11 @@ include_directories(
 # catkin_add_nosetests(test)
 
 
-catkin_install_python(PROGRAMS src/nodes/networking.py
+catkin_install_python(PROGRAMS
+        nodes/networking.py
+        nodes/master.py
+        nodes/selfdriving.py
+        nodes/gps.py
+        nodes/em_supervision.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
-catkin_install_python(PROGRAMS src/nodes/master.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
-catkin_install_python(PROGRAMS src/nodes/selfdriving.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
-catkin_install_python(PROGRAMS src/nodes/gps.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
-catkin_install_python(PROGRAMS src/nodes/em_supervision.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-        )
+)
