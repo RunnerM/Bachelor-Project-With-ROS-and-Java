@@ -2,7 +2,7 @@
 import json
 from json import JSONEncoder
 
-from src.autogator.src.utils.models.gpsTrack import GpsPoint
+from src.autogator.src.autogator.models.gpsTrack import GpsPoint
 
 
 # The Fence represented by a main rectangle and further defined by a list of subtraction rectangles.
