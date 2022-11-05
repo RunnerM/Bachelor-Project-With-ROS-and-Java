@@ -11,7 +11,6 @@ class NetworkingService:
     def scan_command():
         autogator_client = AutogatorClient()
         rate = rospy.Rate(0.1)  # every 10 seconds
-        # this fetch control needs to brought up to node leve since it's blocking the thread
         while not rospy.is_shutdown():
             command = autogator_client.get_command()
             if command is not None:
