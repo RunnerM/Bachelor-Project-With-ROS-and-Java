@@ -1,4 +1,4 @@
-Header enum_header
+Header header
 string type
 string state
 string success

@@ -1,3 +1,3 @@
-Header enum_header
+Header header
 string name
 location[] points

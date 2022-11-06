@@ -1,2 +1,2 @@
-Header enum_header
+Header header
 string state
