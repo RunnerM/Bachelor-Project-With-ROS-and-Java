@@ -5,7 +5,8 @@ from typing import Optional
 import rospy
 
 from autogator.models.command import Command
-from autogator.models.gpsTrack import GpsTrack
+from autogator.models.gpsTrack import GpsTrack, GpsPoint
+from autogator.models.machineState import MachineState
 
 
 class AutogatorClient:
@@ -55,8 +56,33 @@ class AutogatorClient:
             rospy.loginfo(e)
             return False
 
-    def post_state(self, machine_state) -> bool:
+    def post_state(self, state=MachineState) -> bool:
+        try:
+            connection = http.client.HTTPSConnection(self.API_BASE_URL)
+            headers = {'Content-type': 'application/json'}
+            connection.request("POST", "/machine-state", state.to_json(), headers)
+            response = connection.getresponse()
+            hello_str = response.read().decode()
+            rospy.loginfo(hello_str)
+            connection.close()
+            return True
+        except Exception as e:
+            rospy.loginfo(e)
+            return False
         pass
 
-    def post_location(self, location) -> bool:
+    def post_location(self, location=GpsPoint) -> bool:
+        try:
+            connection = http.client.HTTPSConnection(self.API_BASE_URL)
+            headers = {'Content-type': 'application/json'}
+            connection.request("POST", "/location", location.to_json(), headers)
+            response = connection.getresponse()
+            hello_str = response.read().decode()
+            rospy.loginfo(hello_str)
+            connection.close()
+            return True
+        except Exception as e:
+            rospy.loginfo(e)
+            return False
+        pass
         pass

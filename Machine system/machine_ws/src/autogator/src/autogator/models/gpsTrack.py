@@ -2,7 +2,6 @@
 import string
 import json
 from json import JSONEncoder
-import marshal
 
 
 # The object meant to follow the DD GPS format which stands for Decimal degrees.
@@ -14,6 +13,9 @@ class GpsPoint(object):
         self.latitude = latitude
         self.longitude = longitude
         pass
+
+    def to_json(self):
+        return json.dumps(self)
 
     @staticmethod
     def from_json(json_string):
