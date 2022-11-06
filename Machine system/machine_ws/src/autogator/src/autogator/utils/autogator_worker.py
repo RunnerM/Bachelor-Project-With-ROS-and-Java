@@ -10,6 +10,7 @@ class AutogatorWorker(threading.Thread):
         self.function = function
 
     def run(self):
-        rospy.loginfo("Starting worker thread: " + self.name)
+        rospy.loginfo("Starting worker process")
         self.function()
-        rospy.loginfo("Exiting worker thread: " + self.name)
+        rospy.loginfo("Exiting worker process")
+

@@ -36,9 +36,9 @@ class NetworkingService:
         # Add object mapping here to convert machine_state to MachineState object
         res = autogator_client.post_state(machine_state)
         if res is True:
-            rospy.loginfo("Track uploaded successfully.")
+            rospy.loginfo("Machine state uploaded successfully.")
         else:
-            rospy.loginfo("Track upload failed.")
+            rospy.loginfo("Machine state upload failed.")
 
     @classmethod
     def upload_location(cls, location):
