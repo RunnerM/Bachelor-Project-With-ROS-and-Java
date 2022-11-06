@@ -7,29 +7,15 @@ image: atlassian/default-image:3
 
 pipelines:
   default:
-    - parallel:
-      - step:
-          name: 'Build'
-          script:
-            - echo "Your build and test goes here..."
-      - step:
-          name: 'Lint'
-          script:
-            - echo "Your lintin'"
-      - step:
-          name: 'Security scan'
-          script:
-            - echo "Your security scan goes here..."
 
     # The following deployment steps will be executed for each pipeline run. To configure your steps and conditionally deploy see https://support.atlassian.com/bitbucket-cloud/docs/configure-bitbucket-pipelinesyml/
     - step:
         name: 'Deployment to Staging'
         deployment: staging
         script:
-          - echo "Your deployment to staging script goes here..."
-    - step:
-        name: 'Deployment to Production'
-        deployment: production
-        trigger: 'manual'
-        script:
-          - echo "Your deployment to production script goes here..."
+          - sudo curl https://cli-assets.heroku.com/install.sh | sh
+          - cd Backend\ service/AutoGatrorBackend
+          - HEROKU_API_KEY=$(HEROKU_TOKEN) heroku container:login
+          - HEROKU_API_KEY=$(HEROKU_TOKEN) heroku container:push -a autogator-servcie web
+          - HEROKU_API_KEY=$(HEROKU_TOKEN) heroku container:release -a autogator-servcie web
+
