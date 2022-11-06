@@ -1,5 +1,6 @@
 from autogator.services.autogatorClient import AutogatorClient
 import rospy
+from autogator.models.machineState import MachineState
 
 
 class NetworkingService:
@@ -33,7 +34,9 @@ class NetworkingService:
     @classmethod
     def upload_machinestate(cls, machine_state):
         autogator_client = AutogatorClient()
-        # Add object mapping here to convert machine_state to MachineState object
+        rospy.loginfo("Machine state(ros) received: %s", machine_state)
+        state_obj = MachineState(machine_state.state)
+        rospy.loginfo("Machine state received: %s", state_obj.current_state)
         res = autogator_client.post_state(machine_state)
         if res is True:
             rospy.loginfo("Machine state uploaded successfully.")
