@@ -19,5 +19,5 @@ pipelines:
             - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:login
             - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:push -a autogator-servcie web
             - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:release -a autogator-servcie web 
-            - "curl --header "Content-Type: application/json" --request POST --data '{"content":"xyz"}'  https://discord.com/api/webhooks/1032580085842186240/O8b5Nt08B25d4Qg1Im5MovXTbvK03dwc-Bp3_YandHFiqoWKkXfxc855w1PwcKKsyV4r"
+            - "curl --request POST https://discord.com/api/webhooks/1032580085842186240/O8b5Nt08B25d4Qg1Im5MovXTbvK03dwc-Bp3_YandHFiqoWKkXfxc855w1PwcKKsyV4r"
 
