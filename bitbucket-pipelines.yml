@@ -6,18 +6,17 @@
 image: atlassian/default-image:3
 
 pipelines:
-  default:
-
-    # The following deployment steps will be executed for each pipeline run. To configure your steps and conditionally deploy see https://support.atlassian.com/bitbucket-cloud/docs/configure-bitbucket-pipelinesyml/
-    - step:
-        name: 'Deployment to Staging'
-        deployment: staging
-        services:
-          - docker
-        script:
-          - curl https://cli-assets.heroku.com/install.sh | sh
-          - cd Backend\ service/AutoGatrorBackend
-          - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:login
-          - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:push -a autogator-servcie web
-          - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:release -a autogator-servcie web 
+  branches:
+    develop:
+      - step:
+          name: 'Deployment to Staging'
+          deployment: staging
+          services:
+            - docker
+          script:
+            - curl https://cli-assets.heroku.com/install.sh | sh
+            - cd Backend\ service/AutoGatrorBackend
+            - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:login
+            - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:push -a autogator-servcie web
+            - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:release -a autogator-servcie web 
 
