@@ -19,5 +19,5 @@ pipelines:
           - cd Backend\ service/AutoGatrorBackend
           - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:login
           - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:push -a autogator-servcie web
-          - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:release -a autogator-servcie web
+          - HEROKU_API_KEY=$HEROKU_TOKEN heroku container:release -a autogator-servcie web 
 
