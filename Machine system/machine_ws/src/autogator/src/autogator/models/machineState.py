@@ -8,7 +8,7 @@ class MachineState(object):
     current_state = string
 
     def __init__(self, state=string):
-        self.state = state
+        self.current_state = state
 
     def to_json(self):
         return json.dumps(self, cls=CommandEncoder)

@@ -1,3 +1,5 @@
+import string
+
 from autogator.services.autogatorClient import AutogatorClient
 import rospy
 from autogator.models.machineState import MachineState
@@ -21,8 +23,8 @@ class NetworkingService:
                 rospy.loginfo("No new command received.")
             rate.sleep()
 
-    @classmethod
-    def upload_track(cls, gps_track):
+    @staticmethod
+    def upload_track(gps_track):
         autogator_client = AutogatorClient()
 
         res = autogator_client.post_track(gps_track)
@@ -31,13 +33,12 @@ class NetworkingService:
         else:
             rospy.loginfo("Track upload failed.")
 
-    @classmethod
-    def upload_machinestate(cls, machine_state):
+    @staticmethod
+    def upload_machinestate(machine_state):
         autogator_client = AutogatorClient()
-        rospy.loginfo("Machine state(ros) received: %s", machine_state)
         state_obj = MachineState(machine_state.state)
-        rospy.loginfo("Machine state received: %s", state_obj.current_state)
-        res = autogator_client.post_state(machine_state)
+        rospy.loginfo("Requesting machine state update to: %s", state_obj.current_state)
+        res = autogator_client.post_state(state_obj)
         if res is True:
             rospy.loginfo("Machine state uploaded successfully.")
         else:

@@ -20,10 +20,14 @@ class AutogatorClient:
             connection = http.client.HTTPSConnection(self.API_BASE_URL)
             connection.request("GET", "/command")
             response = connection.getresponse()
-            body_str = response.read().decode()
-            command = Command.from_json(body_str)
-            connection.close()
-            return command
+            if response.status == 200:
+                body_str = response.read().decode()
+                command = Command.from_json(body_str)
+                connection.close()
+                return command
+            else:
+                connection.close()
+                return None
         except Exception as e:
             rospy.loginfo(e)
             return None
@@ -34,10 +38,12 @@ class AutogatorClient:
             headers = {'Content-type': 'application/json'}
             connection.request("POST", "/command", command.to_json(), headers)
             response = connection.getresponse()
-            hello_str = response.read().decode()
-            rospy.loginfo(hello_str)
-            connection.close()
-            return True
+            if response.status == 200:
+                connection.close()
+                return True
+            else:
+                connection.close()
+                return False
         except Exception as e:
             rospy.loginfo(e)
             return False
@@ -48,10 +54,12 @@ class AutogatorClient:
             headers = {'Content-type': 'application/json'}
             connection.request("POST", "/new-track", gps_track.to_json(), headers)
             response = connection.getresponse()
-            hello_str = response.read().decode()
-            rospy.loginfo(hello_str)
-            connection.close()
-            return True
+            if response.status == 200:
+                connection.close()
+                return True
+            else:
+                connection.close()
+                return False
         except Exception as e:
             rospy.loginfo(e)
             return False
@@ -62,10 +70,12 @@ class AutogatorClient:
             headers = {'Content-type': 'application/json'}
             connection.request("POST", "/machine-state", state.to_json(), headers)
             response = connection.getresponse()
-            hello_str = response.read().decode()
-            rospy.loginfo(hello_str)
-            connection.close()
-            return True
+            if response.status == 200:
+                connection.close()
+                return True
+            else:
+                connection.close()
+                return False
         except Exception as e:
             rospy.loginfo(e)
             return False
@@ -77,12 +87,13 @@ class AutogatorClient:
             headers = {'Content-type': 'application/json'}
             connection.request("POST", "/location", location.to_json(), headers)
             response = connection.getresponse()
-            hello_str = response.read().decode()
-            rospy.loginfo(hello_str)
-            connection.close()
-            return True
+            if response.status == 200:
+                connection.close()
+                return True
+            else:
+                connection.close()
+                return False
         except Exception as e:
             rospy.loginfo(e)
             return False
-        pass
         pass
