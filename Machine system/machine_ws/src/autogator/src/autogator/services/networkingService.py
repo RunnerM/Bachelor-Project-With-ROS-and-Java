@@ -3,6 +3,7 @@ import string
 from autogator.services.autogatorClient import AutogatorClient
 import rospy
 from autogator.models.machineState import MachineState
+from autogator.models.gpsTrack import GpsPoint
 
 
 class NetworkingService:
@@ -44,11 +45,12 @@ class NetworkingService:
         else:
             rospy.loginfo("Machine state upload failed.")
 
-    @classmethod
-    def upload_location(cls, location):
+    @staticmethod
+    def upload_location(location):
         autogator_client = AutogatorClient()
-        # Add object mapping here to convert location to Location object
-        res = autogator_client.post_location(location)
+        location_point = GpsPoint(location.latitude, location.longitude)
+        rospy.loginfo("Updating location to: %f, %f", location_point.latitude, location_point.longitude)
+        res = autogator_client.post_location(location_point)
         if res is True:
             rospy.loginfo("Location uploaded successfully.")
         else:
