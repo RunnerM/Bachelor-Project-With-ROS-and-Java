@@ -15,7 +15,7 @@ class GpsPoint(object):
         pass
 
     def to_json(self):
-        return json.dumps(self)
+        return json.dumps(self, cls=GpsPointEncoder)
 
     @staticmethod
     def from_json(json_string):
@@ -25,6 +25,11 @@ class GpsPoint(object):
     def map_json(json_dct):
         return GpsPoint(json_dct['latitude'],
                         json_dct['longitude'])
+
+
+class GpsPointEncoder(JSONEncoder):
+    def default(self, obj):
+        return obj.__dict__
 
 
 class GpsTrack(object):

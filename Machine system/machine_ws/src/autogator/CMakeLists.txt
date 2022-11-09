@@ -12,8 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+<<<<<<< HEAD
   gazebo_ros
+=======
+  roslaunch
+>>>>>>> 377ed5093087b6926ddf8d89cf8730f472623857
 )
+
+roslaunch_add_file_check(launch)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
