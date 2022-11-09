@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from machine_ws.src.autogator.srv import CommandNet, CommandNetResponse
-from std_msgs.msg import String
+from autogator.srv import CommandNet, CommandNetResponse
+from autogator.msg import cmd_req
 import os
 import rospy
 
@@ -24,7 +24,8 @@ class master:
         rospy.init_node('master', anonymous=False)
 
         # Callback should be in a service itself
-        rospy.Subscriber("gps_location", location, MasterService.prepare_coordinates())
+        rospy.Subscriber("gps_location", location, MasterService.prepare_coordinates)
+        rospy.Subscriber("command", cmd_req, MasterService.handle_command)
         rospy.logininfo("Master Started.")
 
         # Thread for publishing gps_track
