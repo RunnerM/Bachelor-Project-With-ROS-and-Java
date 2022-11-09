@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 import rospy
-from autogator.msg import location
+from autogator.msg import location, gps_track , cmd_req
 from autogator.models.location import Location
 
 
 class MasterService:
+
+
 
     def __init__(self):
 
@@ -12,6 +14,7 @@ class MasterService:
 
     @staticmethod
     def prepare_coordinates():
+        # break this method down
         # preparing the cords for gpsTrack here
         rate = rospy.Rate(0.1)
 
@@ -58,16 +61,32 @@ class MasterService:
     @staticmethod
     def handle_start_recording_route(command):
         # handle the start recording command
+        # if it's start record, set bool to true
         pass
 
     @staticmethod
     def handle_command(command):
         # handle cmd here and pass to proper func by type.
-        pass
+        # see what the boolean is
+        command_type = cmd_req.type
+        if command_type == "START_REC":
+                rospy.logininfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
+                MasterService.send_command_to_master(cmd_req)
+        else:
+                rospy.logininfo("Different command")
+
+    pass
 
     @classmethod
-    def send_gpsTrack_to_master(cls, CommandNet):
-        pub = rospy.Publisher('gps_track', CommandNet, queue_size=10)
-        pub.publish(CommandNet)
+    def send_gpsTrack_to_master(cls, gps_track):
+        pub = rospy.Publisher('gps_track', gps_track, queue_size=10)
+        pub.publish(gps_track)
+
+    pass
+
+    @classmethod
+    def send_command_to_master(cls, cmd_req_):
+        pub = rospy.Publisher('command_req', cmd_req_, queue_size=10)
+        pub.publish(cmd_req_)
 
     pass
