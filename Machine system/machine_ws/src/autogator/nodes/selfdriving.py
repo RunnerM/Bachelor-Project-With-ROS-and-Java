@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import String
-
-
-def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + "Data Received %s", data.data)
+from autogator.msg import location
+from autogator.services.selfdrivingService import SelfDrivingService
 
 
 class selfdriving:
 
     def __init__(self):
         rospy.init_node('selfdriving', anonymous=False)
+        # Callback should be in a service itself
+        rospy.Subscriber("gps_location", location, SelfDrivingService.handle_seldriving_location())
 
-        rospy.Subscriber("gps_location", String, callback)
-        rate = rospy.Rate(0.2)
-
-        while not rospy.is_shutdown():
-            rospy.loginfo("self-driving is live")
-            rate.sleep()
+        rospy.spin()
 
     pass
+
+
+if __name__ == '__main__':
+    try:
+        selfdriving()
+    except rospy.ROSInterruptException:
+        pass

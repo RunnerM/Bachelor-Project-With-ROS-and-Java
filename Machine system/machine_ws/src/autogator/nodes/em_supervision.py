@@ -1,26 +1,22 @@
 #!/usr/bin/env python
 import rospy
-from std_msgs.msg import String
-from datetime import time
-
-
-def callback(data):
-    rospy.loginfo(rospy.get_caller_id() + "Data Received %s", data.data)
+from autogator.msg import location
+from autogator.services.em_supervisionService import EmergencySupervisionService
 
 
 class em_supervision:
-    _time = time
-    latitude = float
-    longitude = float
 
     def __init__(self):
         rospy.init_node('em_supervision', anonymous=False)
+        # Callback should be in a service itself
+        rospy.Subscriber("gps_location", location, EmergencySupervisionService())
 
-        rospy.Subscriber("gps_location", String, callback)
-        rate = rospy.Rate(0.2)
-
-        while not rospy.is_shutdown():
-            rospy.loginfo("emergency supervision is live")
-            rate.sleep()
+        rospy.spin()
 
     pass
+
+if __name__ == '__main__':
+    try:
+        em_supervision()
+    except rospy.ROSInterruptException:
+        pass

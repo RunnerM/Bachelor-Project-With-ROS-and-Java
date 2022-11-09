@@ -1,0 +1,35 @@
+<launch>
+  <node name="gps" pkg="autogator" type="gps.py" />
+
+  <param name="hztest1/gps_location" value="chatter" />
+  <param name="hztest1/hz" value="10.0" />
+  <param name="hztest1/hzerror" value="0.1" />
+  <param name="hztest1/test_duration" value="60.0" />
+  <test test-name="gps_hz_test" pkg="autogator" type="hztest" name="gps_hz_test" />
+
+  <node name="em_supervision" pkg="autogator" type="em_supervision.py" />
+
+  <param name="hztest1/gps_location" value="chatter" />
+  <param name="hztest1/hz" value="10.0" />
+  <param name="hztest1/hzerror" value="0.1" />
+  <param name="hztest1/test_duration" value="60.0" />
+  <test test-name="em_supervision_hz_test" pkg="autogator" type="hztest" name="em_supervision_hz_test" />
+
+  <node name="master" pkg="autogator" type="master.py" />
+
+  <param name="hztest1/gps_location" value="chatter" />
+  <param name="hztest1/hz" value="10.0" />
+  <param name="hztest1/hzerror" value="0.1" />
+  <param name="hztest1/test_duration" value="60.0" />
+  <test test-name="master_hz_test" pkg="autogator" type="hztest" name="master_hz_test" />
+
+  <node name="selfdriving" pkg="autogator" type="selfdriving.py" />
+
+  <param name="hztest1/gps_location" value="chatter" />
+  <param name="hztest1/hz" value="10.0" />
+  <param name="hztest1/hzerror" value="0.1" />
+  <param name="hztest1/test_duration" value="60.0" />
+  <test test-name="selfdriving_hz_test" pkg="autogator" type="hztest" name="selfdriving_hz_test" />
+  
+</launch>
+
