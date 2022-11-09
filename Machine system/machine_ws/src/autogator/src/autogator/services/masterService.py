@@ -3,6 +3,7 @@ import rospy
 from autogator.msg import location
 from autogator.models.location import Location
 
+
 class MasterService:
 
     def __init__(self):
@@ -21,7 +22,7 @@ class MasterService:
 
             gps_track_msg = gps_track()
             record_no = 1
-            gps_track_msg.name = "Track" + str(int(record_no+1))
+            gps_track_msg.name = "Track" + str(int(record_no + 1))
 
             loc_msg = location()
             loc_msg.longitude = longitude
@@ -44,6 +45,7 @@ class MasterService:
         print("Returning [%s , %s , %s]" % (req.a, req.b, req.t))
         resp = (req.a + req.b)
         return resp
+
     @staticmethod
     def handle_new_point_to_route(data):
         # handle message from gps node on new location and add it to recording path
@@ -57,8 +59,6 @@ class MasterService:
     @staticmethod
     def handle_command(command):
         # handle cmd here and pass to proper func by type.
-        pass
-
         pass
 
     @classmethod
