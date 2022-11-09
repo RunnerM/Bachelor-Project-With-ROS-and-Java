@@ -5,7 +5,7 @@ from std_msgs.msg import String
 import os
 import rospy
 
-from autogator.msg import location
+from autogator.msg import location, cmd_req
 from autogator.services.masterService import MasterService
 from autogator.utils.autogator_worker import AutogatorWorker
 
