@@ -6,7 +6,6 @@ from autogator.models.location import Location
 
 class MasterService:
 
-
     def __init__(self):
 
         pass
