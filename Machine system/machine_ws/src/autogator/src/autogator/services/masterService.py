@@ -40,6 +40,8 @@ class MasterService:
                 if gps_track_msg is not None:
                     MasterService.send_gps_track_to_networking(gps_track_msg)
 
+            # handle sending the current location to networking for monitoring ("location" topic)
+
         else:
             rospy.loginfo("Something went wrong")
         rate.sleep()
