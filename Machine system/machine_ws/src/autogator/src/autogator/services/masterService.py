@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import rospy
-from autogator.msg import location, gps_track , cmd_req
+from autogator.msg import location, gps_track, cmd_req
 from autogator.models.location import Location
 
 
 class MasterService:
-
 
 
     def __init__(self):
@@ -22,7 +21,7 @@ class MasterService:
             longitude = Location(location.longitude)
             latitude = Location(location.latitude)
             rotation = Location(location.rotation)
-            rospy.logininfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", longitude, latitude, rotation)
+            rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", longitude, latitude, rotation)
 
             gps_track_msg = gps_track()
             record_no = 1
@@ -39,15 +38,14 @@ class MasterService:
                 pass
 
                 if gps_track_msg is not None:
-
-                    MasterService.send_gpsTrack_to_master(gps_track_msg)
+                    MasterService.send_gps_track_to_networking(gps_track_msg)
 
         else:
-            rospy.logininfo("Something went wrong")
+            rospy.loginfo("Something went wrong")
         rate.sleep()
 
     @staticmethod
-    def handle_gpsTrack(req):
+    def handle_gps_track(req):
         # Handling of service
         print("Returning [%s , %s , %s]" % (req.a, req.b, req.t))
         resp = (req.a + req.b)
@@ -70,15 +68,26 @@ class MasterService:
         # see what the boolean is
         command_type = cmd_req.type
         if command_type == "START_REC":
-                rospy.logininfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
-                MasterService.send_command_to_master(cmd_req)
+            rospy.loginfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
+            # delegate the command to right function, in some cases self driving, we will send out messages for that node.
+            # I dont think we need an extra round trip from ros.
+            # MasterService.send_command_to_master(cmd_req)
+        elif command_type == "STOP_REC":
+            # handle stop recording in diff func.
+            rospy.loginfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
+        elif command_type == "START_SELFDRIVE":
+            # handle start self driving in diff func.
+            rospy.loginfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
+        elif command_type == "EM_STOP":
+            # handle emergency stop in diff func.
+            rospy.loginfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
         else:
-                rospy.logininfo("Different command")
+            rospy.loginfo("Invalid command")
 
     pass
 
     @classmethod
-    def send_gpsTrack_to_master(cls, gps_track):
+    def send_gps_track_to_networking(cls, gps_track):
         pub = rospy.Publisher('gps_track', gps_track, queue_size=10)
         pub.publish(gps_track)
 

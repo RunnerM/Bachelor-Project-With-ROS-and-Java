@@ -10,7 +10,7 @@ class gps_node:
 
     def __init__(self):
         rospy.init_node('gps_node', anonymous=False)
-        rospy.logininfo("GPS Started.")
+        rospy.loginfo("GPS Started.")
         # Thread
         generate_gps_coord = AutogatorWorker("gps_location", function=GPSService.get_gps_location())
         generate_gps_coord.start()

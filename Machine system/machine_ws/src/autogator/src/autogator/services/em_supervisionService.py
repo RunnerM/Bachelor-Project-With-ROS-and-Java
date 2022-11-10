@@ -18,4 +18,4 @@ class EmergencySupervisionService:
         longitude = Location(location_.longitude)
         latitude = Location(location_.latitude)
         rotation = Location(location_.rotation)
-        rospy.logininfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", longitude, latitude, rotation)
+        rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", longitude, latitude, rotation)
