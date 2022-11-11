@@ -11,9 +11,11 @@ class MasterService:
         pass
 
     @staticmethod
-    def prepare_coordinates():
-        # break this method down
-        # preparing the cords for gpsTrack here
+    def handle_gps_track():
+        # Handling of service
+        # print("Returning [%s , %s , %s]" % (req.a, req.b, req.t))
+        # resp = (req.a + req.b)
+        # return resp
         rate = rospy.Rate(0.1)
 
         if location is not None:
@@ -31,36 +33,47 @@ class MasterService:
             loc_msg.latitude = latitude
             loc_msg.rotation = rotation
 
-            # Taking 10 readings
-            for x in range(9):
-                gps_track_msg.points[x] = loc_msg
-                pass
-
-                if gps_track_msg is not None:
-                    MasterService.send_gps_track_to_networking(gps_track_msg)
-
-            # handle sending the current location to networking for monitoring ("location" topic)
-
+            MasterService.send_gps_track_to_networking(gps_track_msg)
         else:
             rospy.loginfo("Something went wrong")
         rate.sleep()
 
     @staticmethod
-    def handle_gps_track(req):
-        # Handling of service
-        print("Returning [%s , %s , %s]" % (req.a, req.b, req.t))
-        resp = (req.a + req.b)
-        return resp
-
-    @staticmethod
-    def handle_new_point_to_route(data):
+    def handle_new_point_to_route(condition):
         # handle message from gps node on new location and add it to recording path
+        while condition:
+            if location is not None:
+                longitude = Location(location.longitude)
+                latitude = Location(location.latitude)
+                rotation = Location(location.rotation)
+                rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", longitude, latitude, rotation)
+
+                gps_track_msg = gps_track()
+                record_no = 1
+                gps_track_msg.name = "Track" + str(int(record_no + 1))
+
+                loc_msg = location()
+                loc_msg.longitude = longitude
+                loc_msg.latitude = latitude
+                loc_msg.rotation = rotation
+
+                if gps_track_msg is not None:
+                    MasterService.send_gps_track_to_networking(gps_track_msg)
         pass
 
     @staticmethod
     def handle_start_recording_route(command):
-        # handle the start recording command
-        # if it's start record, set bool to true
+        condition_ = bool(True)
+        if command is not None:
+            if cmd_req.type == "START_REC":
+
+                MasterService.handle_new_point_to_route(condition_)
+            elif cmd_req.type == "STOP_REC":
+                condition_ = bool(False)
+
+        else:
+            rospy.loginfo("Something went wrong")
+
         pass
 
     @staticmethod
@@ -70,9 +83,7 @@ class MasterService:
         command_type = cmd_req.type
         if command_type == "START_REC":
             rospy.loginfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
-            # delegate the command to right function, in some cases self driving, we will send out messages for that node.
-            # I dont think we need an extra round trip from ros.
-            # MasterService.send_command_to_master(cmd_req)
+            MasterService.handle_start_recording_route(cmd_req)
         elif command_type == "STOP_REC":
             # handle stop recording in diff func.
             rospy.loginfo("Current state : %s ,\n Success : %s", cmd_req.state, cmd_req.success)
@@ -88,9 +99,9 @@ class MasterService:
     pass
 
     @classmethod
-    def send_gps_track_to_networking(cls, gps_track):
-        pub = rospy.Publisher('gps_track', gps_track, queue_size=10)
-        pub.publish(gps_track)
+    def send_gps_track_to_networking(cls, location):
+        pub = rospy.Publisher('location', location, queue_size=10)
+        pub.publish(location)
 
     pass
 

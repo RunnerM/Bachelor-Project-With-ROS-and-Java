@@ -14,13 +14,12 @@ class master:
 
         # Callback should be in a service itself
         self.master_service = MasterService()
-        rospy.Subscriber("gps_location", location, self.master_service.prepare_coordinates)
+        rospy.Subscriber("location", location, self.master_service.handle_gps_track())
         rospy.Subscriber("command", cmd_req, self.master_service.handle_command)
-        # rospy.Subscriber("command_req", cmd_req, self.master_service.handle_start_recording_route(cmd_req.success))
         rospy.loginfo("Master Started.")
         # Thread for publishing gps_track
         # Maybe update with another method
-        publish_coord = AutogatorWorker("gps_location", function=self.master_service.prepare_coordinates(location))
+        publish_coord = AutogatorWorker("gps_location", function=self.master_service.handle_gps_track())
         publish_coord.start()
 
         rospy.spin()
