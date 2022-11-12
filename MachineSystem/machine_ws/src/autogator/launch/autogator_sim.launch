@@ -1,0 +1,15 @@
+<launch>
+<!--	Args   -->
+	<arg name="use_sim_time" default="true" />
+	<arg name="gui" default="true" />
+
+<!-- autogator nodes: -->
+	<node name="networking" pkg="autogator" type="networking.py" />
+<!--	<node name="gps" pkg="autogator" type="gps.py" />-->
+<!--	<node name="master" pkg="autogator" type="master.py" />-->
+
+
+<!-- Gazebo sim (config in sim_world.launch): -->
+	<include file="$(find autogator)/launch/sim_world.launch">
+  </include>
+</launch>
