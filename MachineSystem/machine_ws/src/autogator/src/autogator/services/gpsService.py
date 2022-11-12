@@ -24,7 +24,7 @@ class GPSService:
 
             rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", long, lat, rot)
 
-            loc_msg = location()
+            loc_msg = location
             loc_msg.longitude = long
             loc_msg.latitude = lat
             loc_msg.rotation = rot
@@ -32,6 +32,7 @@ class GPSService:
             if loc_msg is not None:
                 rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", loc_msg.longitude, loc_msg.latitude, loc_msg.rotation)
                 GPSService.send_loc_to_gps(loc_msg)
+                rate.sleep()
             else:
                 rospy.loginfo("Something went wrong")
                 rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", loc_msg.longitude, loc_msg.latitude, loc_msg.rotation)
