@@ -1,5 +1,0 @@
-string command_type
-string time
-string state
----
-bool result
