@@ -55,13 +55,13 @@ catkin_python_setup()
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   cmd_req.msg
-   location.msg
-   machine_state.msg
-   motor_cmd.msg
-   steering_cmd.msg
-   steering_feedback.msg
-   gps_track.msg
+   CmdReq.msg
+   Location.msg
+   MachineState.msg
+   MotorCmd.msg
+   SteeringCmd.msg
+   SteeringFeedback.msg
+   GpsTrack.msg
  )
 
 ## Generate services in the 'srv' folder

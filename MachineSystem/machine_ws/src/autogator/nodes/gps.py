@@ -3,7 +3,6 @@ import rospy
 
 from autogator.services.gpsService import GPSService
 from autogator.utils.autogator_worker import AutogatorWorker
-from autogator.msg import location
 
 
 class gps_node:
