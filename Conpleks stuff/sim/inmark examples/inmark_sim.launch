@@ -1,0 +1,57 @@
+<launch>
+	<arg name="grass" value="3.0"/>
+	<arg name="hard" value="1.8"/>
+	<arg name="default_line_gain" value="$(arg grass)"/>
+	
+	<include file="$(find inmark_base)/launch/include/vehicle_subsystem.launch"/>
+
+	<include file="$(find inmark_base)/launch/include/dev_utils.launch"/>
+	
+	<!--include file="$(find inmark_base)/launch/include/navigation_subsystem.launch"
+		<arg name="line_gain" value="$(arg default_line_gain)"/>
+	-->
+
+	<include file="$(find inmark_base)/launch/include/experimental_nav.launch">
+	</include>
+
+	<include file="$(find inmark_base)/launch/include/dual_localisation_subsystem.launch"/>
+	<include file="$(find inmark_base)/launch/include/statemachine_subsystem.launch"/>
+	<include file="$(find inmark_base)/launch/include/hmi_subsystem.launch">
+		<arg name="grass_gain" value="$(arg grass)"/>
+		<arg name="hard_gain" value="$(arg hard)"/>
+		<arg name="enable_events" value="false"/>
+	</include>
+	<include file="$(find inmark_base)/launch/include/implement_subsystem.launch">
+	  	<arg name="old_nav" value="false"/>
+	</include>
+	
+<include file="$(find inmark_base)/launch/include/pathplanner_subsystem.launch"/>
+
+		<group ns="transforms">
+			<node pkg="tf" type="static_transform_publisher" name="spray_tf_broadcaster" args="0 -0.41 0 0 0 0 base_link sprayer_link 33"/>
+			<node pkg="tf" type="static_transform_publisher" name="gnss_tf_broadcaster"   args="0.0 0.0 0.7 0 0 0 base_link gps_link 33"/>
+			<node pkg="tf" type="static_transform_publisher" name="imu_broadcaster"   args="0.0 0.0 0.0 0 0 0 base_link imu_link 33"/>
+		</group>
+
+	<node pkg="inmark_sm" name="test_sm_status" type="test_status_report.py" output="screen" >
+		<param name="~mrs_can" value="mrs_can_io" />
+	</node>
+
+	<group ns="fmSensors">
+		<node pkg="ci_nmea_gnss" name="gnss_nmea_utm_node" type="ci_any_gnss_node">
+			<param name="fix_utm_zone" value="true" />
+			<param name="enable_offset_compensation" value="false" />
+
+			<remap from="~serial_in" to="/fmData/gnss_rx"/>
+			<remap from="~gpgga_out" to="/fmInformation/gpgga" />
+			<remap from="~gpgga_utm_out" to="/fmInformation/gpgga_tranmerc" />
+			<remap from="~utm_zone_info" to="/fmInformation/utm_zone_info" />
+		</node>
+	</group>
+
+	<arg name="rviz" default="false" />
+	<include file="$(find inmark_base)/launch/rviz.launch" if="$(arg rviz)"/>
+
+	<param name="/sim/sprayer_start_delay" value="0.05" />
+	<param name="/sim/sprayer_stop_delay" value="0.25" />
+</launch>
