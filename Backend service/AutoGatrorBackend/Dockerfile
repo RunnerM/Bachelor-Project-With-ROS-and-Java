@@ -1,6 +1,7 @@
 FROM gradle:7.5.1-jdk17-alpine as build
 COPY . .
-RUN gradle bootJar
+RUN gradle bootJar \
+    && chown root:root /home/gradle/build/libs/AutoGatrorBackend-0.0.1-SNAPSHOT.jar
 
 FROM openjdk:17 as final
 ARG JAR_FILE=*.jar

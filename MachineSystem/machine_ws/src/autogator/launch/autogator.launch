@@ -1,0 +1,14 @@
+<launch>
+	<node name="master" pkg="autogator" type="master" />
+	<node name="networking" pkg="autogator" type="networking" />
+	<node name="em_supervision" pkg="autogator" type="em_supervision" />
+	<node name="selfdriving" pkg="autogator" type="selfdriving" />
+
+	<node name="gps"
+	    pkg="autogator" type="gps.py">
+	  <remap from="gps_location" to="~output" />
+	</node>
+
+
+</launch>
+<!--don't use me yet I am not final-->
