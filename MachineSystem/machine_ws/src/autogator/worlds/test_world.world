@@ -15,6 +15,10 @@
       <direction>-0.5 0.1 -0.9</direction>
     </light>
 
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
     <physics type='ode'>
       <max_step_size>0.01</max_step_size>
       <real_time_factor>1</real_time_factor>

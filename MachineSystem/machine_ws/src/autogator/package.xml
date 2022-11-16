@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>autogator</name>
-  <version>0.0.0</version>
+  <version>0.0.1</version>
   <description>The autogator package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
@@ -63,6 +63,7 @@
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  <exec_depend>field_surveyor</exec_depend>
 <!--  <exec_depend>autogator</exec_depend>-->
   <test_depend>rosunit</test_depend>
 
