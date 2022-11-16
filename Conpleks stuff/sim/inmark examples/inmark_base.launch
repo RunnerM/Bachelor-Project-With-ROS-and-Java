@@ -1,0 +1,49 @@
+<launch>
+<arg name="grass" value="3.0"/>
+<arg name="hard" value="1.8"/>
+<arg name="line_gain" value="$(arg grass)"/>
+<arg name="events_enabled" default="true" />
+<arg name="acceleration" default="0.2" />
+
+<include file="$(find inmark_base)/launch/include/drivers_subsystem.launch"/>
+
+<include file="$(find inmark_base)/launch/include/dummy_bat.launch"/>
+
+<include file="$(find inmark_base)/launch/include/pathplanner_subsystem.launch">
+	<arg name="path_planner_path" value="/home/rt/im_planners/im-pathplanner-modules:/home/rt/im_planners/im-pathplanner-modules-keep" />
+</include>
+	
+<include file="$(find inmark_base)/launch/include/statemachine_subsystem.launch">
+	<arg name="acceleration" value="$(arg acceleration)" />
+</include>
+
+<include file="$(find inmark_base)/launch/include/dev_utils.launch">
+</include>
+
+<include file="$(find inmark_base)/launch/include/experimental_nav.launch">
+	<arg name="acceleration" value="$(arg acceleration)" />
+</include>
+
+<include file="$(find inmark_base)/launch/include/vehicle_subsystem.launch">
+</include>
+
+<include file="$(find inmark_base)/launch/include/dual_localisation_subsystem.launch" />
+
+<include file="$(find inmark_base)/launch/include/motors.launch"/>
+
+<include file="$(find inmark_base)/launch/include/implement_subsystem.launch">
+  	<arg name="old_nav" value="false"/>
+  	<arg name="enable_events" value="true"/>
+</include>
+
+<include file="$(find inmark_base)/launch/include/hmi_subsystem.launch">
+	<arg name="grass_gain" value="$(arg grass)"/>
+	<arg name="hard_gain" value="$(arg hard)"/>
+	<arg name="enable_events" value="$(arg events_enabled)" />
+	<arg name="pathToEventDB" value="/home/rt"/>
+	<arg name="pathToUserSettingsDB" value="/home/rt"/>
+	<arg name="pathToSystemLog" value="/home/rt"/>
+	<arg name="pathToHmiDB" value="/home/rt" />
+</include>
+
+</launch>
