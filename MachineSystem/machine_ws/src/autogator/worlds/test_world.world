@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<sdf version='1.4'>
+<sdf version='1.6'>
   <world name='test_world'>
     <light name='sun3' type='directional'>
       <cast_shadows>1</cast_shadows>
@@ -14,6 +14,24 @@
       </attenuation>
       <direction>-0.5 0.1 -0.9</direction>
     </light>
+
+    <include>
+        <uri>
+            https://fuel.gazebosim.org/1.0/runnerm/models/SUV
+        </uri>
+    </include>
+
+    <include>
+        <uri>
+            https://fuel.gazebosim.org/1.0/OpenRobotics/models/RoboCup 3D Simulation Field
+        </uri>
+    </include>
+
+    <include>
+        <uri>
+            model://$(find field_surveyor)/field_surveyor
+        </uri>
+    </include>
 
     <include>
       <uri>model://ground_plane</uri>
