@@ -42,7 +42,7 @@ class SelfDrivingService:
             self.pid.auto_mode = True
             # signal irrigation started
 
-            self.irrigation_state_pub.publish(IrrigationSate("started"))
+            self.irrigation_state_pub.publish(IrrigationState("started"))
             rospy.loginfo("Started rollout")
         except Exception as e:
             self.signal_error("Error starting irrigation: " + str(e))
