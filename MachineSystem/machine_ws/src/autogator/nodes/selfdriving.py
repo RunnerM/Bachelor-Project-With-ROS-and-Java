@@ -9,6 +9,7 @@ class selfdriving:
     def __init__(self):
         rospy.init_node('selfdriving', anonymous=False)
         sefldriving_service = SelfDrivingService()
+        rospy.loginfo("Self-driving node started")
         # Callback for start irrigation
         rospy.Subscriber("irrigation", StartIrrigationRequest, sefldriving_service.start_irrigation)
         # Callback for new location

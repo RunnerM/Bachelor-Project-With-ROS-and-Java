@@ -2,7 +2,7 @@
 import math
 
 import rospy
-from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest
+from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, IrrigationState
 from simple_pid import PID
 from autogator.models.gpsTrack import GpsTrack
 from autogator.models.gpsTrack import GpsPoint
@@ -14,7 +14,9 @@ class SelfDrivingService:
     def __init__(self):
         self.steering_pub = rospy.Publisher('steering_angle', SteeringCmd, queue_size=10)
         self.speed_pub = rospy.Publisher('motor_speed', MotorCmd, queue_size=10)
-        self.pid = PID(0.5, 0.2, 0, sample_time=0.01)
+        self.irrigation_state_pub = rospy.Publisher('irrigation_state', IrrigationState, queue_size=10)
+        # update every 5 seconds, 0.5 is the P value, 0.2 is the I value, 0 is the D value
+        self.pid = PID(0.5, 0.2, 0, sample_time=5)
         self.pid.auto_mode = False
         self.current_track = GpsTrack()
         self.current_target_point = GpsPoint(0, 0)
@@ -23,30 +25,41 @@ class SelfDrivingService:
         pass
 
     def start_irrigation(self, start_irrigation_request):
-        # Init track parameters here
-        # deserialize track data from start_irrigation_request.path(JSON)
-        self.current_track = GpsTrack.from_json(start_irrigation_request.track)
-        # Set first point in track as target point
-        self.current_target_index = 0
-        self.current_target_point = self.current_track.points[self.current_target_index]
-        # Start driving forward here. location callback will take over
-        self.send_steering_command(0)
-        # Send speed command to motor node
-        self.send_speed_command(0.5)
-        # Set irrigation in progress to true so location callback will take over
-        self.irrigation_in_progress = True
-        # Start pid controller
-        self.pid.auto_mode = True
+        try:
+            # Init track parameters here
+            # deserialize track data from start_irrigation_request.path(JSON)
+            self.current_track = GpsTrack.from_json(start_irrigation_request.track)
+            # Set first point in track as target point
+            self.current_target_index = 0
+            self.current_target_point = self.current_track.points[self.current_target_index]
+            # Start driving forward here. location callback will take over
+            self.send_steering_command(0)
+            # Send speed command to motor node
+            self.send_speed_command(0.5)
+            # Set irrigation in progress to true so location callback will take over
+            self.irrigation_in_progress = True
+            # Start pid controller
+            self.pid.auto_mode = True
+            # signal irrigation started
+
+            self.irrigation_state_pub.publish(IrrigationSate("started"))
+            rospy.loginfo("Started rollout")
+        except Exception as e:
+            self.signal_error("Error starting irrigation: " + str(e))
         pass
 
     def finalize(self):
-        # exit from self-driving loop here. Reset all parameters
-        self.irrigation_in_progress = False
-        # stop pid controller
-        self.pid.auto_mode = False
-        self.signal_irrigation_finished()
-        # start driving back to base here.
-        # giving control to external node
+        try:
+            # exit from self-driving loop here. Reset all parameters
+            self.irrigation_in_progress = False
+            # stop pid controller
+            self.pid.auto_mode = False
+            self.signal_irrigation_finished()
+            # start driving back to base here.
+            # giving control to external node
+            rospy.loginfo("Finished rollout")
+        except Exception as e:
+            self.signal_error("Error finalizing irrigation: " + str(e))
         pass
 
     def handle_seldriving_location(self, location):
@@ -59,7 +72,7 @@ class SelfDrivingService:
                     self.finalize()
                     pass
                 else:
-                    self.current_target_point = self.current_track.points[self.current_target_index+1]
+                    self.current_target_point = self.current_track.points[self.current_target_index + 1]
                     self.current_target_index += 1
                     # Recalculate optimal angle and set the setpoint here.
                     optimal_angle = self.calculate_optimal_angle(location, self.current_target_point)
@@ -115,5 +128,5 @@ class SelfDrivingService:
         pass
 
     def signal_irrigation_finished(self):
-        
+
         pass

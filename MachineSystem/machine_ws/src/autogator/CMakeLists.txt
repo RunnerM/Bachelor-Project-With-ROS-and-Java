@@ -63,6 +63,7 @@ catkin_python_setup()
    SteeringFeedback.msg
    GpsTrackMsg.msg
    StartIrrigationRequest.msg
+   IrrigationState.msg
  )
 
 ## Generate services in the 'srv' folder
