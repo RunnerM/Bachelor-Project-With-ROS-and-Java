@@ -28,7 +28,9 @@ class SelfDrivingService:
         try:
             # Init track parameters here
             # deserialize track data from start_irrigation_request.path(JSON)
-            self.current_track = GpsTrack.from_json(start_irrigation_request.track)
+            rospy.loginfo("Starting irrigation")
+            rospy.loginfo(start_irrigation_request.path)
+            self.current_track = GpsTrack.from_json(start_irrigation_request.path)
             # Set first point in track as target point
             self.current_target_index = 0
             self.current_target_point = self.current_track.points[self.current_target_index]
@@ -54,7 +56,7 @@ class SelfDrivingService:
             self.irrigation_in_progress = False
             # stop pid controller
             self.pid.auto_mode = False
-            self.signal_irrigation_finished()
+            self.signal_rollout_finished()
             # start driving back to base here.
             # giving control to external node
             rospy.loginfo("Finished rollout")
@@ -124,9 +126,11 @@ class SelfDrivingService:
         pass
 
     def signal_error(self, error_message):
-
+        # signal error here
+        rospy.logerr(error_message)
         pass
 
-    def signal_irrigation_finished(self):
-
+    def signal_rollout_finished(self):
+        # signal irrigation finished here
+        rospy.loginfo("Rollout finished")
         pass
