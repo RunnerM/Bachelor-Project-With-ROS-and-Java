@@ -9,7 +9,7 @@ class GpsPoint(object):
     latitude = float
     longitude = float
 
-    def __init__(self, latitude, longitude):
+    def __init__(self, longitude, latitude):
         self.latitude = latitude
         self.longitude = longitude
         pass
@@ -23,8 +23,7 @@ class GpsPoint(object):
 
     @staticmethod
     def map_json(json_dct):
-        return GpsPoint(json_dct['latitude'],
-                        json_dct['longitude'])
+        return GpsPoint(json_dct['longitude'], json_dct['latitude'])
 
 
 class GpsPointEncoder(JSONEncoder):

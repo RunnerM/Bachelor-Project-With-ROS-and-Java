@@ -6,8 +6,8 @@ from src.autogator.src.autogator.models.gpsTrack import GpsPoint
 
 def seed_data():
     fence = GeoFence()
-    point_a = GpsPoint(41.40000, 2.10000)
-    point_c = GpsPoint(-41.40000, -2.10000)
+    point_a = GpsPoint(-15.5, 20.3)
+    point_c = GpsPoint(15.5, -20.3)
     fence.set_fence(point_a, point_c)
     return fence
 
@@ -15,7 +15,7 @@ def seed_data():
 class GeofenceTestCase(unittest.TestCase):
     def test_add_remove_obstacle(self):
         fence = seed_data()
-        obs1 = Obstacle(GpsPoint(40.30000, 1.10000), GpsPoint(-40.40000, -1.10000))
+        obs1 = Obstacle(GpsPoint(-5.6, 10.5), GpsPoint(0.2, 5.6))
         res = fence.add_obstacle(obs1)
         self.assertEqual(res, True)
         self.assertEqual(len(fence.obstacles), 1)
@@ -24,14 +24,13 @@ class GeofenceTestCase(unittest.TestCase):
 
     def test_serialization(self):
         fence = seed_data()
-        obs1 = Obstacle(GpsPoint(40.30001, 1.10001), GpsPoint(-40.40001, -1.10001))
+        obs1 = Obstacle(GpsPoint(-5.6, 10.5), GpsPoint(0.2, 5.6))
         res = fence.add_obstacle(obs1)
         self.assertEqual(res, True)
         json_fence = fence.to_json()
         self.assertIsNotNone(json_fence)
-        self.assertEqual(json_fence, '{"obstacles": [{"a": {"latitude": 40.30001, "longitude": 1.10001}, '
-                                     '"c": {"latitude": -40.40001, "longitude": -1.10001}}], "A": {"latitude": 41.4, '
-                                     '"longitude": 2.1}, "C": {"latitude": -41.4, "longitude": -2.1}}')
+        self.assertEqual(json_fence,
+                         '{"obstacles": [{"a": {"latitude": 10.5, "longitude": -5.6}, "c": {"latitude": 5.6, "longitude": 0.2}}], "A": {"latitude": 20.3, "longitude": -15.5}, "C": {"latitude": -20.3, "longitude": 15.5}}')
         decoded_fence = GeoFence.from_json(json_fence)
         self.assertIsInstance(decoded_fence, GeoFence)
         self.assertEqual(fence.A.latitude, decoded_fence.A.latitude)
@@ -40,6 +39,24 @@ class GeofenceTestCase(unittest.TestCase):
         self.assertEqual(fence.C.longitude, decoded_fence.C.longitude)
         self.assertEqual(len(fence.obstacles), len(decoded_fence.obstacles))
         self.assertEqual(fence.obstacles[0].a.latitude, decoded_fence.obstacles[0].a.latitude)
+
+    def test_check_point_in_fence(self):
+        fence = seed_data()
+        obs1 = Obstacle(GpsPoint(-5.6, 10.5), GpsPoint(0.2, 5.6))
+        res = fence.add_obstacle(obs1)
+        self.assertEqual(res, True)
+        point = GpsPoint(-1.5, 8.0)
+        self.assertEqual(fence.check_point_in_fence(point), False)
+        point = GpsPoint(-10.0, 8.0)
+        self.assertEqual(fence.check_point_in_fence(point), True)
+        point = GpsPoint(-1.5, 0.0)
+        self.assertEqual(fence.check_point_in_fence(point), True)
+        point = GpsPoint(-2, 9.0)
+        self.assertEqual(fence.check_point_in_fence(point), False)
+        point = GpsPoint(-20.9, 5.0)
+        self.assertEqual(fence.check_point_in_fence(point), False)
+        point = GpsPoint(-2.0, -30.5)
+        self.assertEqual(fence.check_point_in_fence(point), False)
 
 
 if __name__ == '__main__':

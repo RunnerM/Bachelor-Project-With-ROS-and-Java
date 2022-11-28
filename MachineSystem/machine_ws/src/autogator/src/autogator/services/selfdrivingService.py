@@ -92,6 +92,17 @@ class SelfDrivingService:
             pass
         pass
 
+    def handle_emergency_stop(self, stop_request):
+        # stop irrigation here
+        if stop_request.stop:
+            self.finalize()
+        pass
+
+    def signal_rollout_finished(self):
+        # signal rollout finished here
+        self.irrigation_state_pub.publish(IrrigationState("finished"))
+        pass
+
     # param: steering_angle = angle to turn the steering wheel
     def send_steering_command(self, steering_angle):
         steering_cmd = SteeringCmd()
@@ -128,9 +139,4 @@ class SelfDrivingService:
     def signal_error(self, error_message):
         # signal error here
         rospy.logerr(error_message)
-        pass
-
-    def signal_rollout_finished(self):
-        # signal irrigation finished here
-        rospy.loginfo("Rollout finished")
         pass
