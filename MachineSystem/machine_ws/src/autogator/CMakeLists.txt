@@ -64,6 +64,8 @@ catkin_python_setup()
    GpsTrackMsg.msg
    StartIrrigationRequest.msg
    IrrigationState.msg
+   EmStopRequest.msg
+   EmStopResponse.msg
  )
 
 ## Generate services in the 'srv' folder

@@ -15,3 +15,12 @@ class EmergencySupervisionService:
 
         rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", location.longitude, location.latitude,
                       location.rotation)
+
+    @staticmethod
+    def handle_emergency_stop(location):
+        # send stop request to selfdriving
+
+        rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", location.longitude, location.latitude,
+                      location.rotation)
+
+        #
