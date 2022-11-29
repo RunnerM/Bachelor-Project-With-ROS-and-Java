@@ -2,7 +2,7 @@
 import math
 
 import rospy
-from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, IrrigationState
+from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, IrrigationState, EmStopResponse
 from simple_pid import PID
 from autogator.models.gpsTrack import GpsTrack
 from autogator.models.gpsTrack import GpsPoint
@@ -15,6 +15,7 @@ class SelfDrivingService:
         self.steering_pub = rospy.Publisher('steering_angle', SteeringCmd, queue_size=10)
         self.speed_pub = rospy.Publisher('motor_speed', MotorCmd, queue_size=10)
         self.irrigation_state_pub = rospy.Publisher('irrigation_state', IrrigationState, queue_size=10)
+        self.emergency_stop_resp_pub = rospy.Publisher("emergency_stop_resp", EmStopResponse, queue_size=10)
         # update every 5 seconds, 0.5 is the P value, 0.2 is the I value, 0 is the D value
         self.pid = PID(0.5, 0.2, 0, sample_time=5)
         self.pid.auto_mode = False
@@ -98,6 +99,7 @@ class SelfDrivingService:
         # stop irrigation here
         rospy.loginfo("Attempting emergency stop")
         if stop_request.stop and self.irrigation_in_progress:
+            self.emergency_stop_resp_pub(EmStopResponse("Emergency stop initiated"))
             self.finalize()
             rospy.loginfo("Emergency stop is performed")
         pass
