@@ -9,7 +9,7 @@ class GpsPoint(object):
     latitude = float
     longitude = float
 
-    def __init__(self, longitude, latitude):
+    def __init__(self, longitude=float, latitude=float):
         self.latitude = latitude
         self.longitude = longitude
         pass

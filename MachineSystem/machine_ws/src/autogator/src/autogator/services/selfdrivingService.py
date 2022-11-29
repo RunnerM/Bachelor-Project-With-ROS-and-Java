@@ -66,9 +66,11 @@ class SelfDrivingService:
 
     def handle_seldriving_location(self, location):
         # Check if irrigation is in progress
-        if not self.irrigation_in_progress:
+        if self.irrigation_in_progress:
             # Check for threshold on track point and if it is reached, send the next point
-            if distance.distance(self.current_target_point, location).meters < 3:
+            point1 = (location.latitude, location.longitude)
+            point2 = (self.current_target_point.latitude, self.current_target_point.longitude)
+            if distance.distance(point1, point2).meters < 3:
                 # Check if track is finished
                 if self.current_target_index == len(self.current_track.points):
                     self.finalize()
@@ -80,9 +82,9 @@ class SelfDrivingService:
                     optimal_angle = self.calculate_optimal_angle(location, self.current_target_point)
                     self.pid.setpoint = optimal_angle
                 pass
-            control_value = self.pid(location.angle)
+            control_value = self.pid(location.rotation)
             # Convert pid output to steering angle
-            steering_angle = self.convert_gps_angle_to_steering_angle(control_value, location.angle)
+            steering_angle = self.convert_gps_angle_to_steering_angle(control_value, location.rotation)
             # Send steering angle to steering node
             # Check if steering angle is in range
             if 30 > steering_angle > -30:
@@ -94,8 +96,10 @@ class SelfDrivingService:
 
     def handle_emergency_stop(self, stop_request):
         # stop irrigation here
-        if stop_request.stop:
+        rospy.loginfo("Attempting emergency stop")
+        if stop_request.stop and self.irrigation_in_progress:
             self.finalize()
+            rospy.loginfo("Emergency stop is performed")
         pass
 
     def signal_rollout_finished(self):
@@ -130,7 +134,7 @@ class SelfDrivingService:
         return math.atan2(y, x) * 180 / math.pi
         pass
 
-    def convert_gps_angle_to_steering_angle(self, control_angle, current_angle) -> float:
+    def convert_gps_angle_to_steering_angle(self, control_angle=float, current_angle=float) -> float:
         # Convert gps angle to steering angle
         # right is positive, left is negative in driving angle.
         return control_angle - current_angle
