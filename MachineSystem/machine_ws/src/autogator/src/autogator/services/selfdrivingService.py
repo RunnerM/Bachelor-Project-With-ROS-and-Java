@@ -134,7 +134,7 @@ class SelfDrivingService:
         return math.atan2(y, x) * 180 / math.pi
         pass
 
-    def convert_gps_angle_to_steering_angle(self, control_angle=float, current_angle=float) -> float:
+    def convert_gps_angle_to_steering_angle(self, control_angle, current_angle) -> float:
         # Convert gps angle to steering angle
         # right is positive, left is negative in driving angle.
         return control_angle - current_angle
