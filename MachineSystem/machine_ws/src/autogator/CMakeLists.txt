@@ -66,6 +66,7 @@ catkin_python_setup()
    IrrigationState.msg
    EmStopRequest.msg
    EmStopResponse.msg
+   GeoFence.msg
  )
 
 ## Generate services in the 'srv' folder

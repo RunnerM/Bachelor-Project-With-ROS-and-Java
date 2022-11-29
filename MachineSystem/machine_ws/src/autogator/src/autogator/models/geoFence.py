@@ -2,7 +2,7 @@
 import json
 from json import JSONEncoder
 
-from src.autogator.src.autogator.models.gpsTrack import GpsPoint
+from autogator.models.gpsTrack import GpsPoint
 
 
 # The Fence represented by a main rectangle and further defined by a list of subtraction rectangles.
@@ -69,11 +69,11 @@ class GeoFence(object):
         return
 
     # This function checks if the point is within the geofence boundaries and outside any obstacles
-    def check_point_in_fence(self, point=GpsPoint):
-        if self.A.latitude > point.latitude > self.C.latitude and self.A.longitude > point.longitude > self.C.longitude:
+    def check_point_in_fence(self, point=GpsPoint) -> bool:
+        if self.A.latitude > point.latitude > self.C.latitude and self.A.longitude < point.longitude < self.C.longitude:
             for obstacle in self.obstacles:
-                if (obstacle.A.latitude > point.latitude > obstacle.C.latitude and
-                        obstacle.A.longitude > point.longitude > obstacle.C.longitude):
+                if (obstacle.a.latitude > point.latitude > obstacle.c.latitude and
+                        obstacle.a.longitude < point.longitude < obstacle.c.longitude):
                     return False
             return True
         return False

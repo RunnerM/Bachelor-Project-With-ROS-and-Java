@@ -8,9 +8,11 @@ class em_supervision:
 
     def __init__(self):
         rospy.init_node('em_supervision', anonymous=False)
+        self.emergency_supervision_service = EmergencySupervisionService()
         # Callback should be in a service itself
-        rospy.Subscriber("gps_location", Location, EmergencySupervisionService.handle_emergency_situation)
-        rospy.Subscriber("emergency_stop", Location, EmergencySupervisionService.handle_emergency_stop)
+        rospy.Subscriber("gps_location", Location, self.emergency_supervision_service.check_location_emergency)
+        rospy.Subscriber("emergency_stop", Location, self.emergency_supervision_service.handle_emergency_stop)
+        rospy.Subscriber("geofence", Location, self.emergency_supervision_service.handle_geofence)
 
         rospy.spin()
 
