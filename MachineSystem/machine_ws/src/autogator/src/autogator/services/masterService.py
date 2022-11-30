@@ -13,7 +13,7 @@ class MasterService:
         self.loc_pub = rospy.Publisher('location', Location, queue_size=10)
         self.track_pub = rospy.Publisher('gps_track', GpsTrackMsg, queue_size=10)
         self.irrigation_pub = rospy.Publisher('irrigation_command', StartIrrigationRequest, queue_size=10)
-        self.emergency_stop_pub = rospy.Publisher('em_stop', EmStopRequest, queue_size=10)
+        self.emergency_stop_pub = rospy.Publisher('emergency_stop', EmStopRequest, queue_size=10)
 
     def handle_new_point_to_route(self, location):
         # handle message from gps node on new location and add it to recording path

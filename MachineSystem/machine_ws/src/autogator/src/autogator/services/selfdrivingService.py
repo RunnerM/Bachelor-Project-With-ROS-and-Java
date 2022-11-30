@@ -99,7 +99,7 @@ class SelfDrivingService:
         # stop irrigation here
         rospy.loginfo("Attempting emergency stop")
         if stop_request.stop and self.irrigation_in_progress:
-            self.emergency_stop_resp_pub(EmStopResponse("Emergency stop initiated"))
+            self.emergency_stop_resp_pub.publish(EmStopResponse("Emergency stop initiated"))
             self.finalize()
             rospy.loginfo("Emergency stop is performed")
         pass
