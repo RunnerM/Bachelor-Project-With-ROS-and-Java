@@ -1,5 +1,6 @@
 package com.autogator.autogatrorbackend.repository;
 
+import com.autogator.autogatrorbackend.model.entity.CommandContextEntity;
 import com.autogator.autogatrorbackend.model.entity.CommandEntity;
 import com.autogator.autogatrorbackend.model.entity.MachineEntity;
 import com.autogator.autogatrorbackend.model.enums.CommandState;
@@ -11,8 +12,6 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface CommandRepository extends JpaRepository<CommandEntity, Long> {
-    Optional<CommandEntity> findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState commandState, MachineEntity machineEntity);
+public interface CommandContextRepository extends JpaRepository<CommandContextEntity, Long> {
 
-    Optional<CommandEntity> findByCommandStateAndMachineEntity(CommandState commandState, MachineEntity machineEntity);
 }
