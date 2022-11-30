@@ -50,6 +50,9 @@ class GpsTrack(object):
     def remove_point(self, track_point=GpsPoint):
         self.points.remove(track_point)
 
+    def empty_track(self):
+        self.points.clear()
+
     def to_json(self):
         return json.dumps(self, cls=GpsTrackEncoder)
 

@@ -5,6 +5,7 @@ from autogator.models.gpsTrack import GpsTrack, GpsPoint
 
 
 class MasterService:
+    track = GpsTrack
 
     def __init__(self):
         self.tracking = False
@@ -26,6 +27,7 @@ class MasterService:
         self.tracking = True
         # add name here.
         self.track = GpsTrack("track" + str(self.seq))
+        self.track.empty_track()
         self.seq += 1
         pass
 
@@ -34,20 +36,20 @@ class MasterService:
         # see what the boolean is
         command_type = command.type
         if command_type == "START_REC":
-            rospy.loginfo("Current state : %s ,\n Success : %s", command.state, command.success)
+            rospy.loginfo("Start recording route")
             self.handle_start_recording_route()
         elif command_type == "STOP_REC":
             # handle stop recording in diff func.
-            rospy.loginfo("Current state : %s ,\n Success : %s", command.state, command.success)
+            rospy.loginfo("stop recording route")
             self.handle_stop_recording_route()
         elif command_type == "START_SELFDRIVE":
             # handle start self driving in diff func.
             self.handle_star_selfdriving(command)
-            rospy.loginfo("Current state : %s ,\n Success : %s", command.state, command.success)
+            rospy.loginfo("start self driving")
         elif command_type == "EM_STOP":
             # handle emergency stop in diff func.
             em_stop_req = self.handle_em_stop_req()
-            rospy.loginfo("Current state : %s ,\n Success : %s", command.state, command.success)
+            rospy.loginfo("emergency stop")
         else:
             rospy.loginfo("Invalid command")
 
@@ -68,9 +70,12 @@ class MasterService:
 
     pass
 
-    def send_gps_track_to_networking(self, track_msg):
+    def send_gps_track_to_networking(self, track):
+        track_msg = GpsTrackMsg()
+        track_msg.header.stamp = rospy.Time.now()
+        track_msg.header.frame_id = "gps_track"
+        track_msg.serialized = track
         self.track_pub.publish(track_msg)
-
     pass
 
     def handle_new_gps_location(self, location):
@@ -89,6 +94,7 @@ class MasterService:
         self.tracking = False
         # send track to networking
         # map track to msg here
+        serialized_track = self.track.to_json()
 
-        MasterService.send_gps_track_to_networking(self.track)
+        self.send_gps_track_to_networking(serialized_track)
         pass
