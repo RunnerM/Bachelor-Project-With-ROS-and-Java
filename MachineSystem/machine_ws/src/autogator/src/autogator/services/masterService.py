@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-from autogator.msg import Location, GpsTrackMsg, CmdReq, StartIrrigationRequest
+from autogator.msg import Location, GpsTrackMsg, CmdReq, StartIrrigationRequest, EmStopRequest
 from autogator.models.gpsTrack import GpsTrack, GpsPoint
 
 
@@ -13,6 +13,7 @@ class MasterService:
         self.loc_pub = rospy.Publisher('location', Location, queue_size=10)
         self.track_pub = rospy.Publisher('gps_track', GpsTrackMsg, queue_size=10)
         self.irrigation_pub = rospy.Publisher('irrigation_command', StartIrrigationRequest, queue_size=10)
+        self.emergency_stop_pub = rospy.Publisher('em_stop', EmStopRequest, queue_size=10)
 
     def handle_new_point_to_route(self, location):
         # handle message from gps node on new location and add it to recording path
@@ -41,17 +42,29 @@ class MasterService:
             self.handle_stop_recording_route()
         elif command_type == "START_SELFDRIVE":
             # handle start self driving in diff func.
-            start_irrigation_req = StartIrrigationRequest()
-            start_irrigation_req.header.stamp = rospy.Time.now()
-            start_irrigation_req.header.frame_id = "location"
-            start_irrigation_req.path = command.path
-            self.irrigation_pub.publish(start_irrigation_req)
+            self.handle_star_selfdriving(command)
             rospy.loginfo("Current state : %s ,\n Success : %s", command.state, command.success)
         elif command_type == "EM_STOP":
             # handle emergency stop in diff func.
+            em_stop_req = self.handle_em_stop_req()
             rospy.loginfo("Current state : %s ,\n Success : %s", command.state, command.success)
         else:
             rospy.loginfo("Invalid command")
+
+    def handle_em_stop_req(self):
+        em_stop_req = EmStopRequest()
+        em_stop_req.header.stamp = rospy.Time.now()
+        em_stop_req.header.frame_id = "em_stop"
+        em_stop_req.stop = True
+        self.emergency_stop_pub.publish(em_stop_req)
+        return em_stop_req
+
+    def handle_star_selfdriving(self, command):
+        start_irrigation_req = StartIrrigationRequest()
+        start_irrigation_req.header.stamp = rospy.Time.now()
+        start_irrigation_req.header.frame_id = "irrigation"
+        start_irrigation_req.path = command.path
+        self.irrigation_pub.publish(start_irrigation_req)
 
     pass
 
