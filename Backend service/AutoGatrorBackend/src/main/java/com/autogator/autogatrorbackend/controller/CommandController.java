@@ -2,6 +2,7 @@ package com.autogator.autogatrorbackend.controller;
 
 import com.autogator.autogatrorbackend.model.Command;
 import com.autogator.autogatrorbackend.model.enums.MachineCommand;
+import com.autogator.autogatrorbackend.model.request.CommandContextRequest;
 import com.autogator.autogatrorbackend.service.CommandService;
 import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,9 @@ public class CommandController {
     private final CommandService commandService;
 
     @PostMapping
-    public ResponseEntity<Command> queueCommand(@NotNull @RequestParam MachineCommand command, @RequestParam String machineSerialNumber) {
+    public ResponseEntity<Command> queueCommand(CommandContextRequest commandContextRequest) {
 
-        return ResponseEntity.ok(commandService.queueCommand(command, machineSerialNumber));
+        return ResponseEntity.ok(commandService.queueCommand(commandContextRequest));
     }
 
     @GetMapping

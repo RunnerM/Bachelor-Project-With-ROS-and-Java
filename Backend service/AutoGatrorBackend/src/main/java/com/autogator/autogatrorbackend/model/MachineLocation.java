@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.ZonedDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,8 +17,8 @@ public class MachineLocation {
 
     private String machineSerialNumber;
 
-    private float latitude;
+    private String location;
 
-    private float longitude;
+    private ZonedDateTime timestamp;
 
 }

@@ -18,10 +18,6 @@ import java.sql.Timestamp;
 public class MachineStateEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.machine_state_id_seq")
-    @SequenceGenerator(name = "ag.machine_state_id_seq")
-    private Long id;
-
     @Column(name = "machine_serial_number", unique = true, nullable = false)
     private String machineSerialNumber;
 

@@ -29,5 +29,5 @@ public class MachineEntity {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "machine_id")
-    private MachineStateEntity machineStates;
+    private MachineStateEntity machineState;
 }

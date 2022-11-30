@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,8 +24,9 @@ public class CommandEntity {
     @SequenceGenerator(name = "ag.command_id_seq")
     private Long id;
 
-    @Column
-    private String machineSerialNumber;
+    @ManyToOne
+    @JoinColumn(name = "machine_id")
+    private MachineEntity machineEntity;
 
     @Column(name = "machine_command")
     private MachineCommand command;
@@ -34,5 +36,9 @@ public class CommandEntity {
 
     @Column(name = "time_issued")
     private Timestamp timeIssued;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "command_id")
+    private List<CommandContextEntity> contextEntityList;
 
 }
