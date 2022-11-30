@@ -33,7 +33,12 @@ class EmergencySupervisionService:
         result = em_stop_req.stop
         if result:
             rospy.loginfo("Emergency break initiated.")
-            self.emergency_stop_pub.publish(EmStopRequest(True))
+            stop_msg = EmStopRequest()
+            stop_msg.header.stamp = rospy.Time.now()
+            stop_msg.header.frame_id = "stop"
+            stop_msg.stop = True
+            self.emergency_stop_pub.publish(stop_msg)
+
 
     def handle_geofence(self, geofence):
         self.geofence = GeoFence.from_json(geofence)
