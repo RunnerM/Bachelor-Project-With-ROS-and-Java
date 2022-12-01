@@ -5,5 +5,9 @@
     <node name="master" pkg="autogator" type="master.py"/>
     <node name="em_supervision" pkg="autogator" type="em_supervision.py"/>
     <node name="selfdriving" pkg="autogator" type="selfdriving.py"/>
+    <node pkg="test_add_analyzers" type="base_node.py" name="base_node"/>
+  <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator">
+    <rosparam command="load" file="$(find test_add_analyzers)/param/base_analyzers.yaml"/>
+  </node>
 </launch>
 <!--don't use me yet I am not final-->
