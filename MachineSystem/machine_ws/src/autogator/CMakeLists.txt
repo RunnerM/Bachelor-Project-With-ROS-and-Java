@@ -60,7 +60,6 @@ catkin_python_setup()
    MachineState.msg
    MotorCmd.msg
    SteeringCmd.msg
-   SteeringFeedback.msg
    GpsTrackMsg.msg
    StartIrrigationRequest.msg
    IrrigationState.msg
