@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import threading
-from autogator.msg import gps_track, machine_state, location
+from autogator.msg import GpsTrack, MachineState, Location
 
 from autogator.services.networkingService import NetworkingService
 from autogator.utils.autogator_worker import AutogatorWorker
@@ -10,9 +10,10 @@ from autogator.utils.autogator_worker import AutogatorWorker
 class networking:
     def __init__(self):
         rospy.init_node('networking')
-        rospy.Subscriber("gps_track", gps_track, NetworkingService.upload_track)  # from master
-        rospy.Subscriber("machine_state", machine_state, NetworkingService.upload_machinestate)  # from master
-        rospy.Subscriber("location", location, NetworkingService.upload_location)  # from gps
+        self.networking_service = NetworkingService()
+        rospy.Subscriber("gps_track", GpsTrack, self.networking_service.upload_track)  # from master
+        rospy.Subscriber("machine_state", MachineState, self.networking_service.upload_machinestate)  # from master
+        rospy.Subscriber("location", Location, self.networking_service.upload_location)  # from gps
         rospy.loginfo("Networking started.")
         scan_command = AutogatorWorker("scan_command", function=NetworkingService.scan_command())
         scan_command.start()

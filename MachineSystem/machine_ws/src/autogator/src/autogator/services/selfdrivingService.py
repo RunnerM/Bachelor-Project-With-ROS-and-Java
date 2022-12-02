@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import math
+import string
+import time
 
 import rospy
-from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, IrrigationState, EmStopResponse
+from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, EmStopResponse, MachineState
 from simple_pid import PID
 from autogator.models.gpsTrack import GpsTrack
 from autogator.models.gpsTrack import GpsPoint
@@ -14,7 +16,7 @@ class SelfDrivingService:
     def __init__(self):
         self.steering_pub = rospy.Publisher('steering_angle', SteeringCmd, queue_size=10)
         self.speed_pub = rospy.Publisher('motor_speed', MotorCmd, queue_size=10)
-        self.irrigation_state_pub = rospy.Publisher('irrigation_state', IrrigationState, queue_size=10)
+        self.machine_state_pub = rospy.Publisher('machine_state', MachineState, queue_size=10)
         self.emergency_stop_resp_pub = rospy.Publisher("emergency_stop_resp", EmStopResponse, queue_size=10)
         # update every 5 seconds, 0.5 is the P value, 0.2 is the I value, 0 is the D value
         self.pid = PID(0.5, 0.2, 0, sample_time=5)
@@ -44,12 +46,18 @@ class SelfDrivingService:
             # Start pid controller
             self.pid.auto_mode = True
             # signal irrigation started
-
-            self.irrigation_state_pub.publish(IrrigationState("started"))
+            self.report_machine_state("rollout")
             rospy.loginfo("Started rollout")
         except Exception as e:
             self.signal_error("Error starting irrigation: " + str(e))
         pass
+
+    def report_machine_state(self, state):
+        machine_state = MachineState()
+        machine_state.header.stamp = rospy.Time.now()
+        machine_state.header.frame_id = "self_driving"
+        machine_state.state = state
+        self.machine_state_pub.publish(machine_state)
 
     def finalize(self):
         try:
@@ -57,9 +65,12 @@ class SelfDrivingService:
             self.irrigation_in_progress = False
             # stop pid controller
             self.pid.auto_mode = False
-            self.signal_rollout_finished()
+            self.report_machine_state("irrigation")
             # start driving back to base here.
-            # giving control to external node
+            # giving control to external node here we just wait three seconds for simulating the irrigation cycle
+            time.sleep(3)
+            self.report_machine_state("idle")
+
             rospy.loginfo("Finished rollout")
         except Exception as e:
             self.signal_error("Error finalizing irrigation: " + str(e))
@@ -104,11 +115,6 @@ class SelfDrivingService:
             rospy.loginfo("Emergency stop is performed")
         pass
 
-    def signal_rollout_finished(self):
-        # signal rollout finished here
-        self.irrigation_state_pub.publish(IrrigationState("finished"))
-        pass
-
     # param: steering_angle = angle to turn the steering wheel
     def send_steering_command(self, steering_angle):
         steering_cmd = SteeringCmd()
@@ -145,4 +151,5 @@ class SelfDrivingService:
     def signal_error(self, error_message):
         # signal error here
         rospy.logerr(error_message)
+        self.report_machine_state("error")
         pass
