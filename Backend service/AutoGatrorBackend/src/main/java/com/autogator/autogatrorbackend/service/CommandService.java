@@ -1,16 +1,14 @@
 package com.autogator.autogatrorbackend.service;
 
 import com.autogator.autogatrorbackend.model.Command;
-import com.autogator.autogatrorbackend.model.entity.CommandContextEntity;
-import com.autogator.autogatrorbackend.model.entity.CommandEntity;
-import com.autogator.autogatrorbackend.model.entity.MachineEntity;
+import com.autogator.autogatrorbackend.model.Geofence;
+import com.autogator.autogatrorbackend.model.IrrigationRoute;
+import com.autogator.autogatrorbackend.model.entity.*;
 import com.autogator.autogatrorbackend.model.enums.CommandState;
 import com.autogator.autogatrorbackend.model.exception.CommandException;
 import com.autogator.autogatrorbackend.model.request.CommandContextRequest;
 import com.autogator.autogatrorbackend.model.response.CommandResponse;
-import com.autogator.autogatrorbackend.repository.CommandContextRepository;
-import com.autogator.autogatrorbackend.repository.CommandRepository;
-import com.autogator.autogatrorbackend.repository.MachineRepository;
+import com.autogator.autogatrorbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -19,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,6 +28,8 @@ public class CommandService {
     private final CommandRepository commandRepository;
     private final MachineRepository machineRepository;
     private final CommandContextRepository commandContextRepository;
+    private final GeofenceRepository geofenceRepository;
+    private final IrrigationRouteRepository irrigationRouteRepository;
 
     private final ModelMapper mapper = new ModelMapper();
 
@@ -45,27 +46,29 @@ public class CommandService {
 
         saveCommandContext(savedCommand, commandContextRequest.getAdditionalAttributes());
 
-        return null;
+        return mapper.map(savedCommand, Command.class);
     }
-    public Command getNextCommand(String serialNumber) {
 
-        if (commandRepository.findByCommandStateAndMachineEntity(CommandState.IN_PROGRESS, getMachineEntity(serialNumber)).isPresent()) {
+    public CommandResponse getNextCommand(String machineSerialNumber) {
+
+        if (commandRepository.findByCommandStateAndMachineEntity(CommandState.IN_PROGRESS, getMachineEntity(machineSerialNumber)).isPresent()) {
             throw new CommandException("Another command is already in progress");
         }
 
         CommandEntity command = commandRepository
-                .findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState.QUEUED, getMachineEntity(serialNumber))
+                .findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState.QUEUED, getMachineEntity(machineSerialNumber))
                 .orElseThrow(
-                () -> {
-                    throw new CommandException("There are no queued commands");
-                });
+                        () -> {
+                            throw new CommandException("There are no queued commands for machine with serial number: " + machineSerialNumber);
+                        });
 
         command.setCommandState(CommandState.IN_PROGRESS);
         commandRepository.save(command);
 
-        CommandResponse commandResponse = createCommandResponse(command);
+        CommandResponse commandResponse = createCommandResponse(commandContextRepository.findAllByCommandEntity(command));
+        commandResponse.setCommand(mapper.map(command, Command.class));
 
-        return mapper.map(command, Command.class);
+        return commandResponse;
 
     }
 
@@ -78,6 +81,7 @@ public class CommandService {
                         });
 
         commandEntity.setCommandState(CommandState.FINISHED);
+        //commandContextRepository.removeByCommandEntity(commandEntity);
 
         return mapper
                 .map(commandRepository.save(commandEntity), Command.class);
@@ -102,10 +106,35 @@ public class CommandService {
 
     }
 
-    private CommandResponse createCommandResponse(CommandEntity commandEntity) {
+    private CommandResponse createCommandResponse(List<CommandContextEntity> commandContextEntities) {
 
+        CommandResponse commandResponse = new CommandResponse();
 
-        return null;
+        commandContextEntities.forEach(commandContextEntity -> {
+            switch (commandContextEntity.getKey()) {
+                case "geofenceName":
+                    commandResponse.setGeofence(mapper.map(getGeofence(commandContextEntity.getValue()), Geofence.class));
+                case "irrigationRouteName":
+                    commandResponse.setIrrigationRoute(mapper.map(getIrrigationRoute(commandContextEntity.getValue()), IrrigationRoute.class));
+            }
+        });
+        return commandResponse;
+    }
+
+    private GeofenceEntity getGeofence(String geofenceName) {
+
+        return geofenceRepository.getGeofenceByGeofenceName(geofenceName).orElseThrow(
+                () -> {
+                    throw new CommandException("Geofence with name: " + geofenceName);
+                });
+    }
+
+    private IrrigationRouteEntity getIrrigationRoute(String irrigationRouteName) {
+
+        return irrigationRouteRepository.getIrrigationRouteByRouteName(irrigationRouteName).orElseThrow(
+                () -> {
+                    throw new CommandException("Route with name: " + irrigationRouteName);
+                });
     }
 
 }

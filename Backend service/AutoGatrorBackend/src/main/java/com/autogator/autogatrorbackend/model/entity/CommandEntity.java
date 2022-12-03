@@ -25,7 +25,7 @@ public class CommandEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "machine_id")
+    @JoinColumn(name = "machine_id", nullable = false)
     private MachineEntity machineEntity;
 
     @Column(name = "machine_command")

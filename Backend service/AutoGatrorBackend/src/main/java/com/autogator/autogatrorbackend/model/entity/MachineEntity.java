@@ -17,17 +17,23 @@ import java.util.Set;
 public class MachineEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.machine_id_seq")
+    @SequenceGenerator(name = "ag.machine_id_seq")
+    private Long id;
+
     @Column(name = "serial_number", unique = true, nullable = false)
     private String serialNumber;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity userEntity;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "machine_id")
+    @OneToMany(mappedBy="command")
     private Set<CommandEntity> commandEntities;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "machine_id")
-    private MachineStateEntity machineState;
+    @OneToMany(mappedBy="machineLocation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<MachineLocationEntity> machineLocationEntities;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private MachineStateEntity machineStateEntity;
 }

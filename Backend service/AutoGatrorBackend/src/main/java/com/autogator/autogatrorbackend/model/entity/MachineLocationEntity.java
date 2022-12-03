@@ -17,15 +17,15 @@ import java.time.ZonedDateTime;
 public class MachineLocationEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.machine_id_seq")
-    @SequenceGenerator(name = "ag.machine_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.machine_location_id_seq")
+    @SequenceGenerator(name = "ag.machine_location_id_seq")
     Long id;
 
     @ManyToOne
     @JoinColumn(name = "machine_id")
     private MachineEntity machineEntity;
 
-    @Column(name = "machine_location")
+    @Column(name = "location")
     private String machineLocation;
 
     @Column(name = "timestamp")

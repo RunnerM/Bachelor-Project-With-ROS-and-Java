@@ -17,8 +17,7 @@ public class MachineLocationService {
 
     private final MachineLocationRepository machineLocationRepository;
     private final MachineRepository machineRepository;
-
-    private final ModelMapper mapper;
+    private final ModelMapper mapper = new ModelMapper();
 
     public MachineLocation updateLocation(String location, String machineSerialNumber) {
 
@@ -31,6 +30,6 @@ public class MachineLocationService {
     public MachineLocation getCurrentLocation(String location, String machineSerialNumber) {
 
         return mapper.map(machineLocationRepository
-                .findFirstByMachineEntityOrderByTimeIssuedAsc(machineRepository.findBySerialNumber(machineSerialNumber).get()), MachineLocation.class);
+                .findFirstByMachineEntityOrderByTimestampAsc(machineRepository.findBySerialNumber(machineSerialNumber).get()), MachineLocation.class);
     }
 }

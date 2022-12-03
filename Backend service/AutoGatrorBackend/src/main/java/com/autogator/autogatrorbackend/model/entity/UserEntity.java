@@ -14,20 +14,18 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "machine", schema = "ag")
+@Table(name = "user", schema = "ag")
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.machine_id_seq")
-    @SequenceGenerator(name = "ag.machine_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.user_id_seq")
+    @SequenceGenerator(name = "ag.user_id_seq")
     Long id;
 
     @Column(name = "user_name")
     private String UserName;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "machine_id")
-    @Builder.Default
-    private Set<MachineEntity> machineEntities = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<MachineEntity> machineEntities;
 
 }
