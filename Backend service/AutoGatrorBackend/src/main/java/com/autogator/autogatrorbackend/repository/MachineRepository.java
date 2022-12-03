@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface MachineRepository extends JpaRepository<MachineEntity, Long> {
 
-    public Optional<MachineEntity> findBySerialNumber(String serialNumber);
+    Optional<MachineEntity> findBySerialNumber(String serialNumber);
 
 }

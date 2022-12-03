@@ -1,10 +1,9 @@
 package com.autogator.autogatrorbackend.service;
 
-import com.autogator.autogatrorbackend.model.Machine;
 import com.autogator.autogatrorbackend.model.MachineState;
-import com.autogator.autogatrorbackend.model.entity.MachineEntity;
 import com.autogator.autogatrorbackend.model.entity.MachineStateEntity;
 import com.autogator.autogatrorbackend.model.enums.MachineStateEnum;
+import com.autogator.autogatrorbackend.repository.MachineRepository;
 import com.autogator.autogatrorbackend.repository.MachineStateRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +17,8 @@ public class MachineStateService {
 
     private final MachineStateRepository machineStateRepository;
 
+    private final MachineRepository machineRepository;
+
     ModelMapper mapper = new ModelMapper();
 
     public MachineState updateState(MachineStateEnum machineStateEnum, String machineSerialNumber) {
@@ -26,6 +27,7 @@ public class MachineStateService {
     }
 
     public MachineState getMachineStatus(String serialNumber) {
-        return mapper.map(machineStateRepository.findBySerialNumber(serialNumber), MachineState.class);
+//        return mapper.map(machineStateRepository.find(machineRepository.findBySerialNumber(serialNumber).get()), MachineState.class);
+        return null;
     }
 }

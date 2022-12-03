@@ -11,5 +11,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface MachineLocationRepository extends JpaRepository<MachineLocationEntity, Long> {
 
-    MachineLocation findFirstByMachineEntityOrderByTimeIssuedAsc(MachineEntity machineEntity);
+    MachineLocation findFirstByMachineEntityOrderByTimestampAsc(MachineEntity machineEntity);
 }

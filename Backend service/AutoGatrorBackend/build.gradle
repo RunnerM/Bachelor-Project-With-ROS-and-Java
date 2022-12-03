@@ -26,6 +26,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.modelmapper:modelmapper:3.1.0'
+    implementation 'org.postgresql:postgresql:42.5.1'
+//    implementation 'com.oracle.database.jdbc:ojdbc11:21.7.0.0'
+//    implementation 'org.reactivestreams:reactive-streams:1.0.4'
+//    implementation 'com.oracle.database.jdbc:ucp:21.7.0.0'
+//    implementation 'org.apache.tomcat:tomcat-jdbc:10.1.2'
+//    implementation 'org.apache.commons:commons-dbcp2:2.9.0'
 }
 
 tasks.named('test') {

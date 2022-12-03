@@ -18,9 +18,14 @@ import java.sql.Timestamp;
 public class MachineStateEntity {
 
     @Id
-    @Column(name = "machine_serial_number", unique = true, nullable = false)
-    private String machineSerialNumber;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.machine_state_id_seq")
+    @SequenceGenerator(name = "ag.machine_state_id_seq")
+    Long id;
 
-    @Column(name = "machine_state", unique = true, nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "machine_id")
+    private MachineEntity machineEntity;
+
+    @Column(name = "state", unique = true, nullable = false)
     private MachineStateEnum machineStateEnum;
 }
