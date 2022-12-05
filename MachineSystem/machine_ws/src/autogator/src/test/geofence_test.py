@@ -58,6 +58,25 @@ class GeofenceTestCase(unittest.TestCase):
         point = GpsPoint(-2.0, -30.5)
         self.assertEqual(fence.check_point_in_fence(point), False)
 
+    def test_api_model_serialization(self):
+        fence = seed_data()
+        fence.name = "test"
+        obs1 = Obstacle(GpsPoint(4.6, 10.5), GpsPoint(0.2, 5.6))
+        res = fence.add_obstacle(obs1)
+        self.assertEqual(res, True)
+        api_fence = fence.to_api_model()
+        self.assertIsNotNone(api_fence)
+        decoded = GeoFence.from_api_model(api_fence)
+        self.assertEqual(decoded.A.latitude, fence.A.latitude)
+        self.assertEqual(decoded.A.longitude, fence.A.longitude)
+        self.assertEqual(decoded.C.latitude, fence.C.latitude)
+        self.assertEqual(decoded.C.longitude, fence.C.longitude)
+        self.assertEqual(len(decoded.obstacles), len(fence.obstacles))
+        self.assertEqual(decoded.obstacles[0].a.latitude, fence.obstacles[0].a.latitude)
+        self.assertEqual(decoded.obstacles[0].a.longitude, fence.obstacles[0].a.longitude)
+        self.assertEqual(decoded.obstacles[0].c.latitude, fence.obstacles[0].c.latitude)
+        self.assertEqual(decoded.obstacles[0].c.longitude, fence.obstacles[0].c.longitude)
+
 
 if __name__ == '__main__':
     unittest.main()

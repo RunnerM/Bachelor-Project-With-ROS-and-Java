@@ -39,6 +39,7 @@ class Obstacle(object):
 
 
 class GeoFence(object):
+    name = str
     A = GpsPoint
     C = GpsPoint
     obstacles = [Obstacle]
@@ -102,6 +103,38 @@ class GeoFence(object):
             return GeoFence(json_dct['A'], json_dct['C'], json_dct['obstacles'])
         else:
             return json_dct
+
+    def to_api_model(self):
+        obstacles = "["
+        for obstacle in self.obstacles:
+            obstacles += '{"pointALatitude"' + ':' + str(obstacle.a.latitude) + ',' + '"pointALongitude"' + ':' + str(
+                obstacle.a.longitude) + ',' + '"pointBLatitude"' + ':' + str(
+                obstacle.c.latitude) + ',' + '"pointBLongitude"' + ':' + str(obstacle.c.longitude) + '},'
+        obstacles = obstacles[:-1].strip(",")
+        obstacles += "]"
+        return json.dumps({
+            "pointALatitude": self.A.latitude,
+            "pointALongitude": self.A.longitude,
+            "pointBLatitude": self.C.latitude,
+            "pointBLongitude": self.C.longitude,
+            "geofenceName": self.name,
+            "geofenceInternalBoundaries": obstacles
+        })
+
+    @staticmethod
+    def from_api_model(json_string):
+        res = GeoFence()
+        json_dct = json.loads(json_string)
+        res.A = GpsPoint(json_dct['pointALongitude'], json_dct['pointALatitude'])
+        res.C = GpsPoint(json_dct['pointBLongitude'], json_dct['pointBLatitude'])
+        res.name = json_dct['geofenceName']
+        res.obstacles = []
+        obstacles = json_dct['geofenceInternalBoundaries']
+        read_obstacles = json.loads(obstacles)
+        for obstacle in read_obstacles:
+            res.obstacles.append(Obstacle(GpsPoint(obstacle['pointALongitude'], obstacle['pointALatitude']),
+                                          GpsPoint(obstacle['pointBLongitude'], obstacle['pointBLatitude'])))
+        return res
 
 
 class GeoFenceEncoder(JSONEncoder):

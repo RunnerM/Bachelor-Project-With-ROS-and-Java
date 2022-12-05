@@ -69,6 +69,27 @@ class GpsTrack(object):
         else:
             return json_dct
 
+    def to_api_model(self):
+        points = ""
+        for point in self.points:
+            points += "[" + str(point.latitude) + "," + str(point.longitude) + "],"
+        points = points[:-1]
+        return json.dumps({"routeName": self.track_name, "routePoints": points})
+
+    @staticmethod
+    def from_api_model(api_model):
+        json_dct = json.loads(api_model)
+        track_name = json_dct["routeName"]
+        points = json_dct["routePoints"]
+        points = points[1:-1]
+        points = points.split("],[")
+        buffer = []
+        for point in points:
+            #point = point[1:]
+            point = point.split(",")
+            buffer.append(GpsPoint(float(point[1]), float(point[0])))
+        return GpsTrack(track_name, buffer)
+
 
 class GpsTrackEncoder(JSONEncoder):
     def default(self, obj):

@@ -67,6 +67,20 @@ class GpsAndCommandTestCase(unittest.TestCase):
         self.assertEqual(command.time, decoded_command.time)
         self.assertEqual(command.state, decoded_command.state)
 
+    def test_api_model_serialization(self):
+        gt = seed_data()
+        json_gt = gt.to_api_model()
+        self.assertIsNotNone(json_gt)
+        self.assertEqual(json_gt,
+                         '{"routeName": "recording on field", "routePoints": "[2.17403,41.40338],[2.17402,41.40333]"}')
+        decoded_gt = GpsTrack.from_api_model(json_gt)
+        self.assertIsInstance(decoded_gt, GpsTrack)
+        self.assertEqual(gt.track_name, decoded_gt.track_name)
+        self.assertEqual(gt.points[0].latitude, decoded_gt.points[0].latitude)
+        self.assertEqual(gt.points[0].longitude, decoded_gt.points[0].longitude)
+        self.assertEqual(gt.points[1].latitude, decoded_gt.points[1].latitude)
+        self.assertEqual(gt.points[1].longitude, decoded_gt.points[1].longitude)
+
 
 if __name__ == '__main__':
     unittest.main()
