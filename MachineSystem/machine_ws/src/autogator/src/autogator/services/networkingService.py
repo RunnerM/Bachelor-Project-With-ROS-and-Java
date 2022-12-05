@@ -4,6 +4,7 @@ from autogator.services.autogatorClient import AutogatorClient
 import rospy
 from autogator.models.machineState import MachineState
 from autogator.models.gpsTrack import GpsPoint
+from autogator.msg import DiagnosticStatus, DiagnosticArray
 
 
 class NetworkingService:
@@ -22,6 +23,8 @@ class NetworkingService:
                 NetworkingService.send_command_to_master(command)
             else:
                 rospy.loginfo("No new command received.")
+                _diags = NetworkingService.create_status_msg("NETWORKING","NO NEW COMMAND RECEIVED")
+                NetworkingService.send_info(_diags)
             rate.sleep()
 
     @staticmethod
@@ -33,6 +36,8 @@ class NetworkingService:
             rospy.loginfo("Track uploaded successfully.")
         else:
             rospy.loginfo("Track upload failed.")
+            _diags = NetworkingService.create_status_msg("NETWORKING", "NO NEW COMMAND RECEIVED")
+            NetworkingService.send_info(_diags)
 
     @staticmethod
     def upload_machinestate(machine_state):
@@ -44,6 +49,8 @@ class NetworkingService:
             rospy.loginfo("Machine state uploaded successfully.")
         else:
             rospy.loginfo("Machine state upload failed.")
+            _diags = NetworkingService.create_status_msg("NETWORKING", "NO NEW COMMAND RECEIVED")
+            NetworkingService.send_info(_diags)
 
     @staticmethod
     def upload_location(location):
@@ -55,9 +62,32 @@ class NetworkingService:
             rospy.loginfo("Location uploaded successfully.")
         else:
             rospy.loginfo("Location upload failed.")
+            _diags = NetworkingService.create_status_msg("NETWORKING", "NO NEW COMMAND RECEIVED")
+            NetworkingService.send_info(_diags)
 
     @classmethod
     def send_command_to_master(cls, cmd_req):
         pub = rospy.Publisher('command', cmd_req, queue_size=10)
         pub.publish(cmd_req)
         pass
+
+    @staticmethod
+    def create_status_msg(name, message):
+        if name and message is not None:
+            _diagnostic_status = DiagnosticStatus()
+            _diagnostic_status.header.stamp = rospy.Time.Now()
+            _diagnostic_status.name = name
+            _diagnostic_status.message = message
+
+        return _diagnostic_status
+
+    @classmethod
+    def send_info(cls, diagnostic_status):
+        arr = DiagnosticArray()
+        arr.header.stamp = rospy.Time.now()
+        arr.status = [
+            DiagnosticStatus(name=diagnostic_status.name, message=diagnostic_status.message)
+        ]
+        # publish
+        diagnostic_publisher = rospy.Publisher('/diagnostics', DiagnosticArray, queue_size=10)
+        diagnostic_publisher.publish(arr)

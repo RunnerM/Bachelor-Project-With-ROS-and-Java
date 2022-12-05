@@ -2,7 +2,7 @@
 import math
 
 import rospy
-from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, IrrigationState, EmStopResponse
+from autogator.msg import SteeringCmd, MotorCmd, StartIrrigationRequest, IrrigationState, EmStopResponse, DiagnosticStatus, DiagnosticArray
 from simple_pid import PID
 from autogator.models.gpsTrack import GpsTrack
 from autogator.models.gpsTrack import GpsPoint
@@ -16,6 +16,7 @@ class SelfDrivingService:
         self.speed_pub = rospy.Publisher('motor_speed', MotorCmd, queue_size=10)
         self.irrigation_state_pub = rospy.Publisher('irrigation_state', IrrigationState, queue_size=10)
         self.emergency_stop_resp_pub = rospy.Publisher("emergency_stop_resp", EmStopResponse, queue_size=10)
+        self.diagnostic_publisher = rospy.Publisher('/diagnostics', DiagnosticArray, queue_size=10)
         # update every 5 seconds, 0.5 is the P value, 0.2 is the I value, 0 is the D value
         self.pid = PID(0.5, 0.2, 0, sample_time=5)
         self.pid.auto_mode = False
@@ -49,6 +50,8 @@ class SelfDrivingService:
             rospy.loginfo("Started rollout")
         except Exception as e:
             self.signal_error("Error starting irrigation: " + str(e))
+            _diagnostic_status = self.create_status_msg("SELF_DRIVING", str(e))
+            self.send_info(_diagnostic_status)
         pass
 
     def finalize(self):
@@ -63,6 +66,8 @@ class SelfDrivingService:
             rospy.loginfo("Finished rollout")
         except Exception as e:
             self.signal_error("Error finalizing irrigation: " + str(e))
+            _diagnostic_status = self.create_status_msg("SELF_DRIVING", str(e))
+            self.send_info(_diagnostic_status)
         pass
 
     def handle_seldriving_location(self, location):
@@ -92,6 +97,8 @@ class SelfDrivingService:
                 self.send_steering_command(steering_angle)
             else:
                 self.signal_error("Steering angle out of range")
+                _diagnostic_status = self.create_status_msg("SELF_DRIVING", "Steering angle out of range")
+                self.send_info(_diagnostic_status)
             pass
         pass
 
@@ -102,6 +109,8 @@ class SelfDrivingService:
             self.emergency_stop_resp_pub.publish(EmStopResponse("Emergency stop initiated"))
             self.finalize()
             rospy.loginfo("Emergency stop is performed")
+            _diagnostic_status = self.create_status_msg("SELF_DRIVING", "Emergency stop is performed")
+            self.send_info(_diagnostic_status)
         pass
 
     def signal_rollout_finished(self):
@@ -146,3 +155,22 @@ class SelfDrivingService:
         # signal error here
         rospy.logerr(error_message)
         pass
+
+    @staticmethod
+    def create_status_msg(name, message):
+        if name and message is not None:
+            _diagnostic_status = DiagnosticStatus()
+            _diagnostic_status.header.stamp = rospy.Time.Now()
+            _diagnostic_status.name = name
+            _diagnostic_status.message = message
+
+        return _diagnostic_status
+
+    def send_info(self, diagnostic_status):
+        arr = DiagnosticArray()
+        arr.header.stamp = rospy.Time.now()
+        arr.status = [
+            DiagnosticStatus(name=diagnostic_status.name, message=diagnostic_status.message)
+        ]
+        # publish
+        self.diagnostic_publisher.publish(arr)

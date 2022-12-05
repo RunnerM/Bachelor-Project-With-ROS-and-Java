@@ -56,11 +56,12 @@ catkin_python_setup()
  add_message_files(
    FILES
    CmdReq.msg
+   DiagnosticArray.msg
+   DiagnosticStatus.msg
    Location.msg
    MachineState.msg
    MotorCmd.msg
    SteeringCmd.msg
-   SteeringFeedback.msg
    GpsTrackMsg.msg
    StartIrrigationRequest.msg
    IrrigationState.msg
@@ -72,7 +73,7 @@ catkin_python_setup()
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   CommandNet.srv
+   AddDiagnostics.srv
  )
 
 ## Generate actions in the 'action' folder

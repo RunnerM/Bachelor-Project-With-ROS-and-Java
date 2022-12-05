@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 import random
 import rospy
-from autogator.msg import Location
-
-from rostest import deprecated
+from autogator.msg import Location, DiagnosticStatus, DiagnosticArray
 
 
 class GPSService:
 
     def __init__(self):
+        self.diagnostic_publisher = rospy.Publisher('/diagnostics', DiagnosticArray, queue_size=10)
+
 
         pass
 
-    @staticmethod
-    def get_gps_location():
+    def get_gps_location(self):
         lat = float
         long = float
         rot = float
@@ -33,23 +32,31 @@ class GPSService:
             loc_msg.rotation = rot
 
             if loc_msg is not None:
-                rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", loc_msg.longitude, loc_msg.latitude,
-                              loc_msg.rotation)
-                # GPSService.send_loc_to_gps(loc_msg)
+                # rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", loc_msg.longitude, loc_msg.latitude,loc_msg.rotation)
                 pub.publish(loc_msg)
                 rate.sleep()
             else:
-                rospy.loginfo("Something went wrong")
-                rospy.loginfo("Coordinates: \nlong: %d,\nlat: %d,\nrot: %d", loc_msg.longitude, loc_msg.latitude,
-                              loc_msg.rotation)
-                rate.sleep()
+
+                _diagnostic_status = self.create_status_msg("GPS", "Can not read properly from GPS")
+                self.send_info(_diagnostic_status)
+
         pass
 
-# deprecated this publisher should be created once.
     @staticmethod
-    @deprecated
-    def send_loc_to_gps(location):
-        pub = rospy.Publisher('gps_location', location, queue_size=10)
-        pub.publish(location)
+    def create_status_msg(name, message):
+        if name and message is not None:
+            _diagnostic_status = DiagnosticStatus()
+            _diagnostic_status.header.stamp = rospy.Time.Now()
+            _diagnostic_status.name = name
+            _diagnostic_status.message = message
 
-    pass
+        return _diagnostic_status
+
+    def send_info(self, diagnostic_status):
+        arr = DiagnosticArray()
+        arr.header.stamp = rospy.Time.now()
+        arr.status = [
+            DiagnosticStatus(name=diagnostic_status.name, message=diagnostic_status.message)
+        ]
+        # publish
+        self.diagnostic_publisher.publish(arr)
