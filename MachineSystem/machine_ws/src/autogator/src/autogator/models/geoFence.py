@@ -125,15 +125,15 @@ class GeoFence(object):
     def from_api_model(json_string):
         res = GeoFence()
         json_dct = json.loads(json_string)
-        res.A = GpsPoint(json_dct['pointALatitude'], json_dct['pointALongitude'])
-        res.C = GpsPoint(json_dct['pointBLatitude'], json_dct['pointBLongitude'])
+        res.A = GpsPoint(json_dct['pointALongitude'], json_dct['pointALatitude'])
+        res.C = GpsPoint(json_dct['pointBLongitude'], json_dct['pointBLatitude'])
         res.name = json_dct['geofenceName']
         res.obstacles = []
         obstacles = json_dct['geofenceInternalBoundaries']
         read_obstacles = json.loads(obstacles)
         for obstacle in read_obstacles:
-            res.obstacles.append(Obstacle(GpsPoint(obstacle['pointALatitude'], obstacle['pointALongitude']),
-                                          GpsPoint(obstacle['pointBLatitude'], obstacle['pointBLongitude'])))
+            res.obstacles.append(Obstacle(GpsPoint(obstacle['pointALongitude'], obstacle['pointALatitude']),
+                                          GpsPoint(obstacle['pointBLongitude'], obstacle['pointBLatitude'])))
         return res
 
 

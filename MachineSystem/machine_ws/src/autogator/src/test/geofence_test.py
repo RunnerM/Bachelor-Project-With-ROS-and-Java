@@ -71,11 +71,11 @@ class GeofenceTestCase(unittest.TestCase):
         self.assertEqual(decoded.A.longitude, fence.A.longitude)
         self.assertEqual(decoded.C.latitude, fence.C.latitude)
         self.assertEqual(decoded.C.longitude, fence.C.longitude)
-        self.assertEqual(len(api_fence.obstacles), len(fence.obstacles))
-        self.assertEqual(api_fence.obstacles[0].a.latitude, fence.obstacles[0].a.latitude)
-        self.assertEqual(api_fence.obstacles[0].a.longitude, fence.obstacles[0].a.longitude)
-        self.assertEqual(api_fence.obstacles[0].c.latitude, fence.obstacles[0].c.latitude)
-        self.assertEqual(api_fence.obstacles[0].c.longitude, fence.obstacles[0].c.longitude)
+        self.assertEqual(len(decoded.obstacles), len(fence.obstacles))
+        self.assertEqual(decoded.obstacles[0].a.latitude, fence.obstacles[0].a.latitude)
+        self.assertEqual(decoded.obstacles[0].a.longitude, fence.obstacles[0].a.longitude)
+        self.assertEqual(decoded.obstacles[0].c.latitude, fence.obstacles[0].c.latitude)
+        self.assertEqual(decoded.obstacles[0].c.longitude, fence.obstacles[0].c.longitude)
 
 
 if __name__ == '__main__':
