@@ -20,7 +20,9 @@ class MyTestCase(unittest.TestCase):
 
     def test_post_track(self):
         client = AutogatorClient()
-        track = GpsTrack("track_name")
+        track = GpsTrack("track_name_2")
+        track.add_track_point(GpsPoint(1.2222, 2.3242))
+        track.add_track_point(GpsPoint(1.2267, 2.3256))
         result = client.post_track(track)
         self.assertTrue(result)
 

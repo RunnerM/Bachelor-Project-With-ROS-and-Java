@@ -53,7 +53,7 @@ class AutogatorClient:
         try:
             connection = http.client.HTTPSConnection(self.API_BASE_URL)
             headers = {'Content-type': 'application/json'}
-            connection.request("POST", "/new-track", gps_track.to_json(), headers)
+            connection.request("POST", "/irrigationRoute", gps_track.to_api_model(), headers)
             response = connection.getresponse()
             if response.status == 200:
                 connection.close()
