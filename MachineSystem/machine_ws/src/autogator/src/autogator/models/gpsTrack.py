@@ -78,6 +78,8 @@ class GpsTrack(object):
 
     @staticmethod
     def from_api_model(api_model):
+        if api_model is None:
+            return None
         json_dct = json.loads(api_model)
         track_name = json_dct["routeName"]
         points = json_dct["routePoints"]

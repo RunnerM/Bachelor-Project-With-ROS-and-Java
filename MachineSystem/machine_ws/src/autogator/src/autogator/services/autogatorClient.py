@@ -1,34 +1,45 @@
 #!/usr/bin/env python
 import http.client
+import json
 from typing import Optional
 
 import rospy
 
 from autogator.models.command import Command
+from autogator.models.geoFence import GeoFence
 from autogator.models.gpsTrack import GpsTrack, GpsPoint
 from autogator.models.machineState import MachineState
 
 
 class AutogatorClient:
     API_BASE_URL = "autogator-servcie.herokuapp.com"
-    MACHINE_SERIAL_NUMBER = "test_serial_01"
+    MACHINE_SERIAL_NUMBER = "test_serial_05"
 
     def __init__(self):
         pass
 
-    def get_command(self) -> Optional[Command]:
+    def get_command(self):
         try:
             connection = http.client.HTTPSConnection(self.API_BASE_URL)
-            connection.request("GET", "/command")
+            connection.request("GET", "/command" + "?machineSerialNumber=" + self.MACHINE_SERIAL_NUMBER)
             response = connection.getresponse()
             if response.status == 200:
                 body_str = response.read().decode()
-                command = Command.from_json(body_str)
+                json_dict = json.loads(body_str)
+                command_dict = json_dict['command']
+                command = Command(command_dict['command'], command_dict['timeIssued'], command_dict['commandState'])
+                route = json_dict['irrigationRoute']
+                gps_track = GpsTrack.from_api_model(route)
+                fence = json_dict['geofence']
+                gps_fence = GeoFence.from_api_model(fence)
                 connection.close()
-                return command
+                return command, gps_track, gps_fence
+            if response.status == 500:
+                connection.close()
+                return Command("Default", "None", "None"), None, None
             else:
                 connection.close()
-                return None
+                return None, None, None
         except Exception as e:
             rospy.loginfo(e)
             return None
@@ -86,8 +97,9 @@ class AutogatorClient:
         try:
             connection = http.client.HTTPSConnection(self.API_BASE_URL)
             headers = {'Content-type': 'application/json'}
-            params= "?location="+str(location.latitude)+";%20"+str(location.longitude)+"&machineSerialNumber="+self.MACHINE_SERIAL_NUMBER
-            connection.request("POST", "/machineLocation"+params, None, headers)
+            params = "?location=" + str(location.latitude) + ";%20" + str(
+                location.longitude) + "&machineSerialNumber=" + self.MACHINE_SERIAL_NUMBER
+            connection.request("POST", "/machineLocation" + params, None, headers)
             response = connection.getresponse()
             if response.status == 200:
                 connection.close()

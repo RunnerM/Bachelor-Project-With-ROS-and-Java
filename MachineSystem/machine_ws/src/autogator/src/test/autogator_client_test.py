@@ -12,6 +12,7 @@ class MyTestCase(unittest.TestCase):
         command = client.get_command()
         self.assertIsNotNone(command)
 
+
     def test_post_command(self):
         client = AutogatorClient()
         command = Command("type", "time", "state")
