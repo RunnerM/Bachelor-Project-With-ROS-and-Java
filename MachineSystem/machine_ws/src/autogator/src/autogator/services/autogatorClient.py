@@ -11,6 +11,7 @@ from autogator.models.machineState import MachineState
 
 class AutogatorClient:
     API_BASE_URL = "autogator-servcie.herokuapp.com"
+    MACHINE_SERIAL_NUMBER = "test_serial_01"
 
     def __init__(self):
         pass
@@ -85,7 +86,8 @@ class AutogatorClient:
         try:
             connection = http.client.HTTPSConnection(self.API_BASE_URL)
             headers = {'Content-type': 'application/json'}
-            connection.request("POST", "/location", location.to_json(), headers)
+            params= "?location="+str(location.latitude)+";%20"+str(location.longitude)+"&machineSerialNumber="+self.MACHINE_SERIAL_NUMBER
+            connection.request("POST", "/machineLocation"+params, None, headers)
             response = connection.getresponse()
             if response.status == 200:
                 connection.close()

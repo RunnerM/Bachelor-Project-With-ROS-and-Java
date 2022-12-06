@@ -2,7 +2,7 @@ import unittest
 
 
 from src.autogator.src.autogator.models.command import Command
-from src.autogator.src.autogator.models.gpsTrack import GpsTrack
+from src.autogator.src.autogator.models.gpsTrack import GpsTrack, GpsPoint
 from src.autogator.src.autogator.services.autogatorClient import AutogatorClient
 
 
@@ -22,6 +22,11 @@ class MyTestCase(unittest.TestCase):
         client = AutogatorClient()
         track = GpsTrack("track_name")
         result = client.post_track(track)
+        self.assertTrue(result)
+
+    def test_post_location(self):
+        client = AutogatorClient()
+        result = client.post_location(GpsPoint(1.2222, 2.3242))
         self.assertTrue(result)
 
 
