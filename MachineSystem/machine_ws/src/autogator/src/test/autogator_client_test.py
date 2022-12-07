@@ -13,12 +13,6 @@ class MyTestCase(unittest.TestCase):
         self.assertIsNotNone(command)
 
 
-    def test_post_command(self):
-        client = AutogatorClient()
-        command = Command("type", "time", "state")
-        result = client.post_command(command)
-        self.assertTrue(result)
-
     def test_post_track(self):
         client = AutogatorClient()
         track = GpsTrack("track_name_2")

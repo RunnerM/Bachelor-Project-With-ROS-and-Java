@@ -42,23 +42,7 @@ class AutogatorClient:
                 return None, None, None
         except Exception as e:
             rospy.loginfo(e)
-            return None
-
-    def post_command(self, command=Command) -> bool:
-        try:
-            connection = http.client.HTTPSConnection(self.API_BASE_URL)
-            headers = {'Content-type': 'application/json'}
-            connection.request("POST", "/command", command.to_json(), headers)
-            response = connection.getresponse()
-            if response.status == 200:
-                connection.close()
-                return True
-            else:
-                connection.close()
-                return False
-        except Exception as e:
-            rospy.loginfo(e)
-            return False
+            return None, None, None
 
     def post_track(self, gps_track=GpsTrack) -> bool:
         try:
