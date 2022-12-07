@@ -80,11 +80,16 @@ class AutogatorClient:
         try:
             connection = http.client.HTTPSConnection(self.API_BASE_URL)
             headers = {'Content-type': 'application/json'}
-            connection.request("POST", "/machine-state", state.to_json(), headers)
+            connection.request("POST", "/machineState" + "?machineStateEnum=" + state.current_state + "&machineSerialNumber=" + self.MACHINE_SERIAL_NUMBER)
             response = connection.getresponse()
             if response.status == 200:
+                response_str = response.read().decode()
+                json_dict = json.loads(response_str)
+                if json_dict["machineStateEnum"] == state.current_state:
+                    connection.close()
+                    return True
                 connection.close()
-                return True
+                return False
             else:
                 connection.close()
                 return False

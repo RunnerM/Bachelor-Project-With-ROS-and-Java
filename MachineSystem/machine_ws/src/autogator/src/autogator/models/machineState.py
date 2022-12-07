@@ -21,7 +21,6 @@ class MachineState(object):
     def map_json(json_dct):
         return MachineState(json_dct['current_state'])
 
-
 class CommandEncoder(JSONEncoder):
     def default(self, obj):
         return obj.__dict__
