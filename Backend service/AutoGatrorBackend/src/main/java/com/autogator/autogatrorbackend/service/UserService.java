@@ -22,7 +22,7 @@ public class UserService {
 
         return userRepository.findAll()
                 .stream()
-                .map(userEntity -> mapper.map(userEntity, User.class))
+                .map(user -> mapper.map(user, User.class))
                 .collect(Collectors.toList());
     }
 

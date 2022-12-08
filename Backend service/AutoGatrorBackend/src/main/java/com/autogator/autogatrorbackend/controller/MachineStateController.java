@@ -5,10 +5,7 @@ import com.autogator.autogatrorbackend.model.enums.MachineStateEnum;
 import com.autogator.autogatrorbackend.service.MachineStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/machineState")
@@ -21,5 +18,11 @@ public class MachineStateController {
     public ResponseEntity<MachineState> updateState(@RequestParam MachineStateEnum machineStateEnum, @RequestParam String machineSerialNumber) {
 
         return ResponseEntity.ok(machineStateService.updateState(machineStateEnum, machineSerialNumber));
+    }
+
+    @GetMapping
+    public ResponseEntity<MachineState> updateState(@RequestParam String machineSerialNumber) {
+
+        return ResponseEntity.ok(machineStateService.getMachineStatus(machineSerialNumber));
     }
 }

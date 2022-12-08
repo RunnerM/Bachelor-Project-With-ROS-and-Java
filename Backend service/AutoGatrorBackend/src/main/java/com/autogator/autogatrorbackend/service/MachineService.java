@@ -3,7 +3,7 @@ package com.autogator.autogatrorbackend.service;
 import com.autogator.autogatrorbackend.model.Machine;
 import com.autogator.autogatrorbackend.model.entity.MachineEntity;
 import com.autogator.autogatrorbackend.model.entity.UserEntity;
-import com.autogator.autogatrorbackend.model.exception.GeofenceException;
+import com.autogator.autogatrorbackend.model.exception.CommandException;
 import com.autogator.autogatrorbackend.model.exception.MachineException;
 import com.autogator.autogatrorbackend.model.exception.UserException;
 import com.autogator.autogatrorbackend.repository.MachineRepository;
@@ -29,14 +29,21 @@ public class MachineService {
             throw new MachineException("Machine with serial number: " + machine.getSerialNumber() + " is already registered");
         }
 
-        UserEntity userEntity = userRepository.findById(machine.getUserId()).orElseThrow(() -> {
+        UserEntity UserEntity = userRepository.findById(machine.getUserId()).orElseThrow(() -> {
             throw new UserException("User with id: " + machine.getUserId() + " does not exist");
         });
 
-        MachineEntity machineToRegister = mapper.map(machine, MachineEntity.class);
-        machineToRegister.setUserEntity(userEntity);
+        MachineEntity machineEntityToRegister = mapper.map(machine, MachineEntity.class);
+        machineEntityToRegister.setUserEntity(UserEntity);
 
-        return mapper.map(machineRepository.save(machineToRegister), Machine.class);
+        return mapper.map(machineRepository.save(machineEntityToRegister), Machine.class);
+    }
+
+    public MachineEntity getMachineEntity(String serialNumber) {
+
+        return machineRepository.findBySerialNumber(serialNumber).orElseThrow(() -> {
+            throw new CommandException("Machine with serial number: " + serialNumber + "does not exist");
+        });
     }
 
     //In the future the system will also store machines that are not yet registered, this check will be necessary then

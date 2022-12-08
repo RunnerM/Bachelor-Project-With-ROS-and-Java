@@ -7,10 +7,7 @@ import com.autogator.autogatrorbackend.service.MachineLocationService;
 import com.autogator.autogatrorbackend.service.MachineStateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,5 +20,11 @@ public class MachineLocationController {
     public ResponseEntity<MachineLocation> updateState(@RequestParam String location, @RequestParam String machineSerialNumber) {
 
         return ResponseEntity.ok(machineLocationService.updateLocation(location, machineSerialNumber));
+    }
+
+    @GetMapping
+    public ResponseEntity<MachineLocation> getMachineLocation(@RequestParam String machineSerialNumber) {
+
+        return ResponseEntity.ok(machineLocationService.getCurrentLocation(machineSerialNumber));
     }
 }

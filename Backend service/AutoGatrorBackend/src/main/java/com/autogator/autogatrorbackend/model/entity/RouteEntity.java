@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "route", schema = "ag")
-public class IrrigationRouteEntity {
+public class RouteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ag.route_id_seq")
@@ -22,4 +22,8 @@ public class IrrigationRouteEntity {
 
     @Column(name = "route_points")
     private String routePoints;
+
+    @ManyToOne
+    UserEntity UserEntity;
+
 }

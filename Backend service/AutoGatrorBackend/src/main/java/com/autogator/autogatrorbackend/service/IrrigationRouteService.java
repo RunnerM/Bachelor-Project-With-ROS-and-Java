@@ -1,7 +1,7 @@
 package com.autogator.autogatrorbackend.service;
 
 import com.autogator.autogatrorbackend.model.IrrigationRoute;
-import com.autogator.autogatrorbackend.model.entity.IrrigationRouteEntity;
+import com.autogator.autogatrorbackend.model.entity.RouteEntity;
 import com.autogator.autogatrorbackend.model.exception.GeofenceException;
 import com.autogator.autogatrorbackend.repository.IrrigationRouteRepository;
 
@@ -9,7 +9,6 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,22 +23,22 @@ public class IrrigationRouteService {
 
     public IrrigationRoute saveRoute(IrrigationRoute irrigationRoute) {
 
-        IrrigationRouteEntity irrigationRouteEntity =
-                irrigationRouteRepository.save(mapper.map(irrigationRoute, IrrigationRouteEntity.class));
+        RouteEntity RouteEntity =
+                irrigationRouteRepository.save(mapper.map(irrigationRoute, RouteEntity.class));
 
-        return mapper.map(irrigationRouteEntity, IrrigationRoute.class);
+        return mapper.map(RouteEntity, IrrigationRoute.class);
     }
 
     public IrrigationRoute getRoute(String routeName) {
 
-        IrrigationRouteEntity irrigationRouteEntity =
+        RouteEntity RouteEntity =
                 irrigationRouteRepository
                         .getIrrigationRouteByRouteName(routeName)
                         .orElseThrow(() -> {
                             throw new GeofenceException("Route with name: " + routeName + " does not exist");
                         });
 
-        return mapper.map(irrigationRouteEntity, IrrigationRoute.class);
+        return mapper.map(RouteEntity, IrrigationRoute.class);
     }
 
     public List<String> getRouteNames() {

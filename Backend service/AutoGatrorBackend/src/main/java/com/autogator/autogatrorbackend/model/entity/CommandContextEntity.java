@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Data
@@ -21,13 +20,12 @@ public class CommandContextEntity {
     @SequenceGenerator(name = "ag.command_context_id_seq")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "command_id")
-    private CommandEntity commandEntity;
-
     @Column(name = "key")
     private String key;
 
     @Column(name = "value")
     private String value;
+
+    @ManyToOne
+    private CommandEntity CommandEntity;
 }

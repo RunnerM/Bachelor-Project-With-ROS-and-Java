@@ -35,4 +35,7 @@ public class GeofenceInternalBoundaryEntity {
     @Column(name = "geofence_id")
     private Long geofenceId;
 
+    @ManyToOne
+    GeofenceEntity GeofenceEntity;
+
 }

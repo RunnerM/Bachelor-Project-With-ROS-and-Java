@@ -1,6 +1,6 @@
 package com.autogator.autogatrorbackend.repository;
 
-import com.autogator.autogatrorbackend.model.entity.IrrigationRouteEntity;
+import com.autogator.autogatrorbackend.model.entity.RouteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,12 +11,12 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface IrrigationRouteRepository extends JpaRepository<IrrigationRouteEntity, Long> {
+public interface IrrigationRouteRepository extends JpaRepository<RouteEntity, Long> {
 
-    @Query("SELECT ir.routeName FROM IrrigationRouteEntity ir")
+    @Query("SELECT ir.routeName FROM RouteEntity ir")
     List<String> getIrrigationRouteNames();
 
-    Optional<IrrigationRouteEntity> getIrrigationRouteByRouteName(String routeName);
+    Optional<RouteEntity> getIrrigationRouteByRouteName(String routeName);
 
     Object deleteByRouteName(String routeName);
 }

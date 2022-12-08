@@ -1,14 +1,13 @@
 package com.autogator.autogatrorbackend.service;
 
 import com.autogator.autogatrorbackend.model.Command;
-import com.autogator.autogatrorbackend.model.Geofence;
-import com.autogator.autogatrorbackend.model.IrrigationRoute;
-import com.autogator.autogatrorbackend.model.entity.*;
+import com.autogator.autogatrorbackend.model.entity.CommandEntity;
 import com.autogator.autogatrorbackend.model.enums.CommandState;
 import com.autogator.autogatrorbackend.model.exception.CommandException;
 import com.autogator.autogatrorbackend.model.request.CommandContextRequest;
 import com.autogator.autogatrorbackend.model.response.CommandResponse;
-import com.autogator.autogatrorbackend.repository.*;
+import com.autogator.autogatrorbackend.repository.CommandContextRepository;
+import com.autogator.autogatrorbackend.repository.CommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -17,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,115 +23,84 @@ import java.util.Map;
 public class CommandService {
 
     private final CommandRepository commandRepository;
-    private final MachineRepository machineRepository;
     private final CommandContextRepository commandContextRepository;
-    private final GeofenceRepository geofenceRepository;
-    private final IrrigationRouteRepository irrigationRouteRepository;
+    private final MachineOwnershipService machineOwnershipService;
+    private final CommandContextService commandContextService;
+    private final MachineService machineService;
 
     private final ModelMapper mapper = new ModelMapper();
 
     public Command queueCommand(CommandContextRequest commandContextRequest) {
 
+        //TODO: Take user id from auth service once implemented
+        doesMachineBelongToUser(commandContextRequest.getMachineSerialNumber(), 1L);
+
         CommandEntity commandEntity = CommandEntity.builder()
                 .commandState(CommandState.QUEUED)
                 .timeIssued(Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("UTC")).toLocalDateTime()))
                 .command(commandContextRequest.getMachineCommand())
-                .machineEntity(getMachineEntity(commandContextRequest.getMachineSerialNumber()))
+                .MachineEntity(machineService.getMachineEntity(commandContextRequest.getMachineSerialNumber()))
                 .build();
 
-        CommandEntity savedCommand = commandRepository.save(commandEntity);
+        CommandEntity savedCommandEntity = commandRepository.save(commandEntity);
 
-        saveCommandContext(savedCommand, commandContextRequest.getAdditionalAttributes());
+        commandContextService.saveCommandContext(savedCommandEntity, commandContextRequest.getAdditionalAttributes());
 
-        return mapper.map(savedCommand, Command.class);
+        return mapper.map(savedCommandEntity, Command.class);
     }
 
     public CommandResponse getNextCommand(String machineSerialNumber) {
 
-        if (commandRepository.findByCommandStateAndMachineEntity(CommandState.IN_PROGRESS, getMachineEntity(machineSerialNumber)).isPresent()) {
+        //TODO: Take user id from auth service once implemented
+        doesMachineBelongToUser(machineSerialNumber, 1L);
+
+        if (commandRepository.findByCommandStateAndMachineEntity(CommandState.IN_PROGRESS,
+                machineService.getMachineEntity(machineSerialNumber)).isPresent()) {
             throw new CommandException("Another command is already in progress");
         }
 
-        CommandEntity command = commandRepository
-                .findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState.QUEUED, getMachineEntity(machineSerialNumber))
+        CommandEntity CommandEntity = commandRepository
+                .findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState.QUEUED,
+                        machineService.getMachineEntity(machineSerialNumber))
                 .orElseThrow(
                         () -> {
                             throw new CommandException("There are no queued commands for machine with serial number: " + machineSerialNumber);
                         });
 
-        command.setCommandState(CommandState.IN_PROGRESS);
-        commandRepository.save(command);
+        CommandEntity.setCommandState(CommandState.IN_PROGRESS);
+        commandRepository.save(CommandEntity);
 
-        CommandResponse commandResponse = createCommandResponse(commandContextRepository.findAllByCommandEntity(command));
-        commandResponse.setCommand(mapper.map(command, Command.class));
+        CommandResponse commandResponse = commandContextService.createCommandResponse(commandContextRepository.findAllByCommandEntity(CommandEntity));
+        commandResponse.setCommand(mapper.map(CommandEntity, Command.class));
 
         return commandResponse;
 
     }
 
-    public Command finishCurrentCommand(String serialNumber) {
+    public Command finishCurrentCommand(String machineSerialNumber) {
 
-        CommandEntity commandEntity = commandRepository.findByCommandStateAndMachineEntity(CommandState.IN_PROGRESS, getMachineEntity(serialNumber))
+        //TODO: Take user id from auth service once implemented
+        doesMachineBelongToUser(machineSerialNumber, 1L);
+
+        CommandEntity CommandEntity = commandRepository.findByCommandStateAndMachineEntity(CommandState.IN_PROGRESS,
+                        machineService.getMachineEntity(machineSerialNumber))
                 .orElseThrow(
                         () -> {
                             throw new CommandException("There are no commands in progress");
                         });
 
-        commandEntity.setCommandState(CommandState.FINISHED);
-        //commandContextRepository.removeByCommandEntity(commandEntity);
+        commandContextRepository.removeByCommandEntity(CommandEntity);
+        CommandEntity.setCommandState(CommandState.FINISHED);
 
         return mapper
-                .map(commandRepository.save(commandEntity), Command.class);
+                .map(commandRepository.save(CommandEntity), Command.class);
     }
 
-    private MachineEntity getMachineEntity(String serialNumber) {
+    private void doesMachineBelongToUser(String machineSerialNumber, Long userId) {
 
-        return machineRepository.findBySerialNumber(serialNumber).orElseThrow(() -> {
-            throw new CommandException("Machine with serial number: " + serialNumber + "does not exist");
-        });
-    }
-
-    private void saveCommandContext(CommandEntity commandEntity, Map<String, String> additionalAttributes) {
-
-        for (Map.Entry<String, String> entry : additionalAttributes.entrySet()) {
-            commandContextRepository.save(CommandContextEntity.builder().
-                    commandEntity(commandEntity).
-                    key(entry.getKey()).
-                    value(entry.getValue()).
-                    build());
+        if(machineOwnershipService.doesMachineBelongToUser(machineSerialNumber, userId)) {
+            throw new CommandException("Currently logged in user cannot issue commands to machine" + machineSerialNumber);
         }
 
     }
-
-    private CommandResponse createCommandResponse(List<CommandContextEntity> commandContextEntities) {
-
-        CommandResponse commandResponse = new CommandResponse();
-
-        commandContextEntities.forEach(commandContextEntity -> {
-            switch (commandContextEntity.getKey()) {
-                case "geofenceName":
-                    commandResponse.setGeofence(mapper.map(getGeofence(commandContextEntity.getValue()), Geofence.class));
-                case "irrigationRouteName":
-                    commandResponse.setIrrigationRoute(mapper.map(getIrrigationRoute(commandContextEntity.getValue()), IrrigationRoute.class));
-            }
-        });
-        return commandResponse;
-    }
-
-    private GeofenceEntity getGeofence(String geofenceName) {
-
-        return geofenceRepository.getGeofenceByGeofenceName(geofenceName).orElseThrow(
-                () -> {
-                    throw new CommandException("Geofence with name: " + geofenceName);
-                });
-    }
-
-    private IrrigationRouteEntity getIrrigationRoute(String irrigationRouteName) {
-
-        return irrigationRouteRepository.getIrrigationRouteByRouteName(irrigationRouteName).orElseThrow(
-                () -> {
-                    throw new CommandException("Route with name: " + irrigationRouteName);
-                });
-    }
-
 }

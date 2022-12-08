@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,7 +25,13 @@ public class UserEntity {
     @Column(name = "user_name")
     private String UserName;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<MachineEntity> machineEntities;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<GeofenceEntity> geofenceEntityEntities;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<RouteEntity> irrigationRouteEntityEntities;
+
+    @OneToMany
+    List<MachineEntity> machineEntityList;
 
 }

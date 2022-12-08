@@ -27,7 +27,7 @@ public class MachineLocationService {
                 .machineLocation(location).timestamp(ZonedDateTime.now()).build()), MachineLocation.class);
     }
 
-    public MachineLocation getCurrentLocation(String location, String machineSerialNumber) {
+    public MachineLocation getCurrentLocation(String machineSerialNumber) {
 
         return mapper.map(machineLocationRepository
                 .findFirstByMachineEntityOrderByTimestampAsc(machineRepository.findBySerialNumber(machineSerialNumber).get()), MachineLocation.class);

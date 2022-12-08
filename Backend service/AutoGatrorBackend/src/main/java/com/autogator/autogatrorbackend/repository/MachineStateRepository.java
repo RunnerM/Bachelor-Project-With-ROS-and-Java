@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface MachineStateRepository extends JpaRepository<MachineStateEntity, String> {
 
-    //Optional<MachineStateEntity> find(MachineEntity machineEntity);
+    Optional<MachineStateEntity> findByMachineEntity(MachineEntity machineEntity);
 }

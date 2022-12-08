@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -22,10 +21,9 @@ public class MachineStateEntity {
     @SequenceGenerator(name = "ag.machine_state_id_seq")
     Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "machine_id")
-    private MachineEntity machineEntity;
-
     @Column(name = "state", unique = true, nullable = false)
     private MachineStateEnum machineStateEnum;
+
+    @ManyToOne
+    MachineEntity MachineEntity;
 }

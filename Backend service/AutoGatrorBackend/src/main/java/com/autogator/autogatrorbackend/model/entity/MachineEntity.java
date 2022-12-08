@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -26,14 +26,14 @@ public class MachineEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity userEntity;
-
-    @OneToMany(mappedBy="command")
-    private Set<CommandEntity> commandEntities;
-
-    @OneToMany(mappedBy="machineLocation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<MachineLocationEntity> machineLocationEntities;
+    private UserEntity UserEntity;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private MachineStateEntity machineStateEntity;
+    private MachineStateEntity machinestate;
+
+    @OneToMany
+    List<CommandEntity> CommandEntity;
+
+    @OneToMany
+    List<MachineLocationEntity> machineList;
 }

@@ -24,10 +24,6 @@ public class CommandEntity {
     @SequenceGenerator(name = "ag.command_id_seq")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "machine_id", nullable = false)
-    private MachineEntity machineEntity;
-
     @Column(name = "machine_command")
     private MachineCommand command;
 
@@ -37,8 +33,9 @@ public class CommandEntity {
     @Column(name = "time_issued")
     private Timestamp timeIssued;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "command_id")
-    private List<CommandContextEntity> contextEntityList;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private MachineEntity MachineEntity;
 
+    @OneToMany
+    List<CommandContextEntity> CommandContextEntity;
 }

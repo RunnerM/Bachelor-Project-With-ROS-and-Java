@@ -4,5 +4,6 @@ public enum MachineStateEnum {
     PROCESSING_COMMAND,
     ROLLING_OUT,
     IRRIGATING,
+    RECORDING,
     ERROR
 }

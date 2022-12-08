@@ -21,13 +21,13 @@ public class MachineLocationEntity {
     @SequenceGenerator(name = "ag.machine_location_id_seq")
     Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "machine_id")
-    private MachineEntity machineEntity;
-
     @Column(name = "location")
     private String machineLocation;
 
     @Column(name = "timestamp")
     private ZonedDateTime timestamp;
+
+    @OneToOne
+    MachineEntity machineEntity;
+
 }

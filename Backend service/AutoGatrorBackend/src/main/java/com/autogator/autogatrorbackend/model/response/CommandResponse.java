@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,4 +21,6 @@ public class CommandResponse {
     private Geofence geofence;
 
     private IrrigationRoute irrigationRoute;
+
+    private Map<String, String> additionalAttributes;
 }

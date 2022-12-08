@@ -3,7 +3,6 @@ package com.autogator.autogatrorbackend.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,8 +33,9 @@ public class GeofenceEntity {
     @Column(name = "point_b_longitude")
     private float pointBLongitude;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "geofence_id")
-    @Builder.Default
-    private List<GeofenceInternalBoundaryEntity> geofenceInternalBoundaries = new ArrayList<>();
+    @OneToMany
+    List<GeofenceInternalBoundaryEntity> GeofenceInternalBoundaryEntity;
+
+    @ManyToOne
+    UserEntity UserEntity;
 }

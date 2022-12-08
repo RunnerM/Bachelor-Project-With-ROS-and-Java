@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface CommandRepository extends JpaRepository<CommandEntity, Long> {
-    Optional<CommandEntity> findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState commandState, MachineEntity machineEntity);
+    Optional<CommandEntity> findFirstByCommandStateAndMachineEntityOrderByTimeIssuedAsc(CommandState commandState, MachineEntity MachineEntity);
 
-    Optional<CommandEntity> findByCommandStateAndMachineEntity(CommandState commandState, MachineEntity machineEntity);
+    Optional<CommandEntity> findByCommandStateAndMachineEntity(CommandState commandState, MachineEntity MachineEntity);
 }
