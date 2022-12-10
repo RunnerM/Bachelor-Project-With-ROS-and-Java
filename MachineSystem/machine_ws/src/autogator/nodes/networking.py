@@ -17,8 +17,6 @@ class networking:
         rospy.loginfo("Networking started.")
         scan_command = AutogatorWorker("scan_command", function=self.networking_service.scan_command())
         scan_command.start()
-        # threading.Thread(target=NetworkingService.scan_command()).start()
-
         rospy.spin()
 
     pass
