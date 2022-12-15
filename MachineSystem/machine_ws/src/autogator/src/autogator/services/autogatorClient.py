@@ -10,7 +10,7 @@ from autogator.models.machineState import MachineState
 
 
 class AutogatorClient:
-    API_BASE_URL = "utogator-servcie.herokuapp.com"
+    API_BASE_URL = "autogator-servcie.herokuapp.com"
 
     def __init__(self):
         pass

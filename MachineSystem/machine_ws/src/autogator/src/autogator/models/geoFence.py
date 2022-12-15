@@ -2,7 +2,7 @@
 import json
 from json import JSONEncoder
 
-from src.autogator.src.autogator.models.gpsTrack import GpsPoint
+from autogator.models.gpsTrack import GpsPoint
 
 
 # The Fence represented by a main rectangle and further defined by a list of subtraction rectangles.
@@ -39,17 +39,23 @@ class Obstacle(object):
 
 
 class GeoFence(object):
+    name = str
     A = GpsPoint
     C = GpsPoint
     obstacles = [Obstacle]
 
-    def __init__(self, a=float, c=float, obstacles=None):
+    def __init__(self, a=GpsPoint, c=GpsPoint, obstacles=None):
         if obstacles is None:
             self.obstacles = []
         else:
             self.obstacles = obstacles
-        self.A = a
-        self.C = c
+        if a is None:
+            self.A = GpsPoint(0, 0)
+        if c is None:
+            self.C = GpsPoint(0, 0)
+        else:
+            self.A = a
+            self.C = c
 
     def set_fence(self, a, c):
         self.A = a
@@ -69,13 +75,15 @@ class GeoFence(object):
         return
 
     # This function checks if the point is within the geofence boundaries and outside any obstacles
-    def check_point_in_fence(self, point=GpsPoint):
-        if self.A.latitude > point.latitude > self.C.latitude and self.A.longitude > point.longitude > self.C.longitude:
-            for obstacle in self.obstacles:
-                if (obstacle.A.latitude > point.latitude > obstacle.C.latitude and
-                        obstacle.A.longitude > point.longitude > obstacle.C.longitude):
-                    return False
-            return True
+    def check_point_in_fence(self, point=GpsPoint) -> bool:
+        if self.A is not None or self.C is not None:
+            if self.A.latitude > point.latitude > self.C.latitude and self.A.longitude < point.longitude < self.C.longitude:
+                for obstacle in self.obstacles:
+                    if (obstacle.a.latitude > point.latitude > obstacle.c.latitude and
+                            obstacle.a.longitude < point.longitude < obstacle.c.longitude):
+                        return False
+                return True
+            return False
         return False
 
     def to_json(self):
@@ -95,6 +103,38 @@ class GeoFence(object):
             return GeoFence(json_dct['A'], json_dct['C'], json_dct['obstacles'])
         else:
             return json_dct
+
+    def to_api_model(self):
+        obstacles = "["
+        for obstacle in self.obstacles:
+            obstacles += '{"pointALatitude"' + ':' + str(obstacle.a.latitude) + ',' + '"pointALongitude"' + ':' + str(
+                obstacle.a.longitude) + ',' + '"pointBLatitude"' + ':' + str(
+                obstacle.c.latitude) + ',' + '"pointBLongitude"' + ':' + str(obstacle.c.longitude) + '},'
+        obstacles = obstacles[:-1].strip(",")
+        obstacles += "]"
+        return json.dumps({
+            "pointALatitude": self.A.latitude,
+            "pointALongitude": self.A.longitude,
+            "pointBLatitude": self.C.latitude,
+            "pointBLongitude": self.C.longitude,
+            "geofenceName": self.name,
+            "geofenceInternalBoundaries": obstacles
+        })
+
+    @staticmethod
+    def from_api_model(json_string):
+        res = GeoFence()
+        json_dct = json.loads(json_string)
+        res.A = GpsPoint(json_dct['pointALongitude'], json_dct['pointALatitude'])
+        res.C = GpsPoint(json_dct['pointBLongitude'], json_dct['pointBLatitude'])
+        res.name = json_dct['geofenceName']
+        res.obstacles = []
+        obstacles = json_dct['geofenceInternalBoundaries']
+        read_obstacles = json.loads(obstacles)
+        for obstacle in read_obstacles:
+            res.obstacles.append(Obstacle(GpsPoint(obstacle['pointALongitude'], obstacle['pointALatitude']),
+                                          GpsPoint(obstacle['pointBLongitude'], obstacle['pointBLatitude'])))
+        return res
 
 
 class GeoFenceEncoder(JSONEncoder):

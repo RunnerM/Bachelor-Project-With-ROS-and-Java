@@ -1,3 +1,2 @@
 Header header
-string name
-Location[] points
+string serialized
