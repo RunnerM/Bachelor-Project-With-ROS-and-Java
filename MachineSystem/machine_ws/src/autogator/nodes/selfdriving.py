@@ -14,11 +14,8 @@ class selfdriving:
         rospy.Subscriber("irrigation_command", StartIrrigationRequest, self.sefldriving_service.start_irrigation)
         # Callback for new location
         rospy.Subscriber("gps_location", Location, self.sefldriving_service.handle_seldriving_location)
-
         rospy.Subscriber("emergency_stop_req", EmStopRequest, self.sefldriving_service.handle_emergency_stop)
-
         rospy.spin()
-
     pass
 
 

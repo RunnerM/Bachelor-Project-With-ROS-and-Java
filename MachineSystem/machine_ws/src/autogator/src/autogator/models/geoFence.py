@@ -123,6 +123,8 @@ class GeoFence(object):
 
     @staticmethod
     def from_api_model(json_string):
+        if json_string is None:
+            return GeoFence()
         res = GeoFence()
         json_dct = json.loads(json_string)
         res.A = GpsPoint(json_dct['pointALongitude'], json_dct['pointALatitude'])

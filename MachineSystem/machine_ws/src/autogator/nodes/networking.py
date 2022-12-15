@@ -15,10 +15,8 @@ class networking:
         rospy.Subscriber("machine_state", MachineState, self.networking_service.upload_machinestate)  # from master
         rospy.Subscriber("location", Location, self.networking_service.upload_location)  # from gps
         rospy.loginfo("Networking started.")
-        scan_command = AutogatorWorker("scan_command", function=NetworkingService.scan_command())
+        scan_command = AutogatorWorker("scan_command", function=self.networking_service.scan_command())
         scan_command.start()
-        # threading.Thread(target=NetworkingService.scan_command()).start()
-
         rospy.spin()
 
     pass

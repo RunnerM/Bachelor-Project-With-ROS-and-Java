@@ -35,18 +35,18 @@ class MasterService:
         # handle cmd here and pass to proper func by type.
         # see what the boolean is
         command_type = command.type
-        if command_type == "START_REC":
+        if command_type == "START_RECORDING":
             rospy.loginfo("Start recording route")
             self.handle_start_recording_route()
-        elif command_type == "STOP_REC":
+        elif command_type == "STOP_RECORDING":
             # handle stop recording in diff func.
             rospy.loginfo("stop recording route")
             self.handle_stop_recording_route()
-        elif command_type == "START_SELFDRIVE":
+        elif command_type == "START_IRRIGATION":
             # handle start self driving in diff func.
             self.handle_star_selfdriving(command)
             rospy.loginfo("start self driving")
-        elif command_type == "EM_STOP":
+        elif command_type == "EMERGENCY_STOP":
             # handle emergency stop in diff func.
             em_stop_req = self.handle_em_stop_req()
             rospy.loginfo("emergency stop")

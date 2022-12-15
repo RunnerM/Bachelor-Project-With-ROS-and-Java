@@ -17,7 +17,6 @@ class SelfDrivingService:
         self.steering_pub = rospy.Publisher('steering_angle', SteeringCmd, queue_size=10)
         self.speed_pub = rospy.Publisher('motor_speed', MotorCmd, queue_size=10)
         self.machine_state_pub = rospy.Publisher('machine_state', MachineState, queue_size=10)
-        self.emergency_stop_resp_pub = rospy.Publisher("emergency_stop_resp", EmStopResponse, queue_size=10)
         # update every 5 seconds, 0.5 is the P value, 0.2 is the I value, 0 is the D value
         self.pid = PID(0.5, 0.2, 0, sample_time=5)
         self.pid.auto_mode = False
@@ -46,7 +45,7 @@ class SelfDrivingService:
             # Start pid controller
             self.pid.auto_mode = True
             # signal irrigation started
-            self.report_machine_state("rollout")
+            self.report_machine_state("ROLLING_OUT")
             rospy.loginfo("Started rollout")
         except Exception as e:
             self.signal_error("Error starting irrigation: " + str(e))
@@ -65,11 +64,11 @@ class SelfDrivingService:
             self.irrigation_in_progress = False
             # stop pid controller
             self.pid.auto_mode = False
-            self.report_machine_state("irrigation")
+            self.report_machine_state("IRRIGATING")
             # start driving back to base here.
             # giving control to external node here we just wait three seconds for simulating the irrigation cycle
             time.sleep(3)
-            self.report_machine_state("idle")
+            self.report_machine_state("IDLE")
 
             rospy.loginfo("Finished rollout")
         except Exception as e:
@@ -110,7 +109,7 @@ class SelfDrivingService:
         # stop irrigation here
         rospy.loginfo("Attempting emergency stop")
         if stop_request.stop and self.irrigation_in_progress:
-            self.emergency_stop_resp_pub.publish(EmStopResponse("Emergency stop initiated"))
+            slef.signal_error("emergency stop")
             self.finalize()
             rospy.loginfo("Emergency stop is performed")
         pass
@@ -151,5 +150,5 @@ class SelfDrivingService:
     def signal_error(self, error_message):
         # signal error here
         rospy.logerr(error_message)
-        self.report_machine_state("error")
+        self.report_machine_state("ERROR")
         pass

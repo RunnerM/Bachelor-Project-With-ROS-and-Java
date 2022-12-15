@@ -4,22 +4,30 @@ from autogator.services.autogatorClient import AutogatorClient
 import rospy
 from autogator.models.machineState import MachineState
 from autogator.models.gpsTrack import GpsPoint
+from autogator.msg import CmdReq
 
 
 class NetworkingService:
 
     def __init__(self):
-        pass
+        self.command_pub = rospy.Publisher('command', CmdReq, queue_size=10)
 
-    @staticmethod
-    def scan_command():
+    def scan_command(self):
         autogator_client = AutogatorClient()
         rate = rospy.Rate(0.1)  # every 10 seconds
         while not rospy.is_shutdown():
-            command = autogator_client.get_command()
-            if command is not None:
+            command, track, fence = autogator_client.get_command()
+            if command is not None and command.command_type != "Default":
                 rospy.loginfo("Command received from backend: %s", command.to_json())
-                NetworkingService.send_command_to_master(command)
+                request = CmdReq()
+                request.header.stamp = rospy.Time.now()
+                request.header.frame_id = "command"
+                request.header.seq = 1
+                request.type = command.command_type
+                if command.command_type == "START_IRRIGATION":
+                    request.path = track.to_json()
+                    request.geofence = fence.to_json()
+                self.command_pub.publish(request)
             else:
                 rospy.loginfo("No new command received.")
             rate.sleep()
@@ -55,9 +63,3 @@ class NetworkingService:
             rospy.loginfo("Location uploaded successfully.")
         else:
             rospy.loginfo("Location upload failed.")
-
-    @classmethod
-    def send_command_to_master(cls, cmd_req):
-        pub = rospy.Publisher('command', cmd_req, queue_size=10)
-        pub.publish(cmd_req)
-        pass
