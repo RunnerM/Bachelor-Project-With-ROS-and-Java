@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(autogator)
+project(test_add_analyzers)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,25 +8,20 @@ project(autogator)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  bondpy
+  diagnostic_msgs
   roscpp
   rospy
-  std_msgs
-  message_generation
-  gazebo_ros
-  roslaunch
 )
-
-roslaunch_add_file_check(launch)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(gazebo REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-catkin_python_setup()
+# catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -53,28 +48,18 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   CmdReq.msg
-   DiagnosticArray.msg
-   DiagnosticStatus.msg
-   Location.msg
-   MachineState.msg
-   MotorCmd.msg
-   SteeringCmd.msg
-   GpsTrackMsg.msg
-   StartIrrigationRequest.msg
-   IrrigationState.msg
-   EmStopRequest.msg
-   EmStopResponse.msg
-   GeoFence.msg
- )
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   AddDiagnostics.srv
- )
+# add_service_files(
+#   FILES
+#   Service1.srv
+#   Service2.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -84,10 +69,10 @@ catkin_python_setup()
 # )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   diagnostic_msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -119,11 +104,9 @@ catkin_python_setup()
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   DEPENDS
-        gazebo_ros
 #  INCLUDE_DIRS include
-   LIBRARIES autogator
-   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+#  LIBRARIES test_add_analyzers
+#  CATKIN_DEPENDS bondpy diagnostic_msgs roscpp rospy
 #  DEPENDS system_lib
 )
 
@@ -134,15 +117,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
- include
+# include
   ${catkin_INCLUDE_DIRS}
-  ${GAZEBO_INCLUDE_DIRS}
-  ${SDFormat_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/autogator.cpp
+#   src/${PROJECT_NAME}/test_add_analyzers.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -153,7 +134,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/autogator_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/test_add_analyzers_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -217,20 +198,10 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_autogator.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_test_add_analyzers.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-
-catkin_install_python(PROGRAMS
-        nodes/networking.py
-        nodes/master.py
-        nodes/selfdriving.py
-        nodes/gps.py
-        nodes/em_supervision.py
-        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
